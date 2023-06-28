@@ -1,0 +1,226 @@
+# Reference: https://taskfile.dev/api/
+
+version: "3"
+
+vars:
+  PROTOC_GEN_GO_VERSION: v1.30.0
+  PROTOC_GEN_GO_GRPC_VERSION: v1.3.0
+  PROTOC_GEN_GRPC_GATEWAY_VERSION: v2.16.0
+  MIGRATE_VERSION: v4.15.2
+
+env:
+  GOBIN: "{{ .ROOT_DIR }}/bin"
+
+tasks:
+  ############
+  # Wrappers #
+  ############
+
+  default:
+    desc: "Install deps, check and build"
+    cmds:
+      - task: deps
+      - task: lint-proto
+      - task: generate-proto
+      - task: lint-go
+      - task: test-go
+      - task: build
+
+  check:
+    desc: "Run all check tasks"
+    cmds:
+      - task: default
+      - task: test-integration-docker
+
+  proto:
+    desc: "Lint and generate proto sources"
+    cmds:
+      - task: lint-proto
+      - task: generate-proto
+
+  go:
+    desc: "Lint and test Go sources"
+    cmds:
+      - task: lint-go
+      - task: test-go
+
+  #########
+  # Tasks #
+  #########
+
+  deps:
+    desc: "Install and tidy up dependencies"
+    run: once
+    cmds:
+      - go mod tidy
+  lint-proto:
+    desc: "Lint proto files"
+    deps:
+      - tools
+    cmds:
+      - PATH="${GOBIN}:${PATH}" buf lint --error-format=msvs
+  generate-proto:
+    aliases:
+      - gen-proto
+    desc: "Generate code from proto files"
+    deps:
+      - tools
+    cmds:
+      - PATH="${GOBIN}:${PATH}" buf generate
+        --template buf.gen.yaml
+      - PATH="${GOBIN}:${PATH}" buf generate
+        --template api/proto/infragmo/auditum/v1alpha1/openapi.buf.gen.yaml
+        --path api/proto/infragmo/auditum/v1alpha1
+        --path api/proto/google/api
+        --path api/proto/protoc-gen-openapiv2/options
+  lint-go:
+    desc: "Lint Go sources"
+    deps:
+      - deps
+      - tools
+    cmds:
+      - golangci-lint run {{ .CLI_ARGS }}
+  test-go:
+    desc: "Run unit tests for Go sources"
+    deps:
+      - deps
+    cmds:
+      - go test -race {{ .CLI_ARGS }} ./...
+  build:
+    desc: "Build binaries"
+    deps:
+      - deps
+    cmds:
+      - go build -o ${GOBIN}/auditum ./cmd/auditum
+  test-integration:
+    desc: "Run integration tests"
+    summary: |
+      Run integration tests.
+      
+      Examples:
+
+        # Runs all integration tests
+        task test-integration
+
+        # Runs specific tests
+        task test-integration -- TestIntegration_Some
+    deps:
+      - deps
+    cmds:
+      - go test
+        -tags "integration postgres"
+        -v
+        -p 1
+        -count 1
+        ./internal/sql/...
+        -run {{ default "TestIntegration" .CLI_ARGS }}
+      - go test
+        -tags "integration sqlite"
+        -v
+        -p 1
+        -count 1
+        ./internal/sql/...
+        -run {{ default "TestIntegration" .CLI_ARGS }}
+  test-integration-docker:
+    desc: "Run integration tests with docker"
+    summary: |
+      Run integration tests with docker.
+      
+      Examples:
+
+        # Runs all integration tests
+        task test-integration-docker
+
+        # Runs specific tests
+        task test-integration-docker -- TestIntegration_Some
+    deps:
+      - deps
+    cmds:
+      - ./test/docker-compose.sh {{ .CLI_ARGS }}
+  migration:
+    desc: "Create migration files"
+    summary: |
+      Create migration files for the given name.
+      
+      Examples:
+
+        task migration -- create_table_foo
+    deps:
+      - tools
+    cmds:
+      - PATH="${GOBIN}:${PATH}" migrate
+        create
+        -ext sql
+        -dir ./internal/sql/postgres/migrations
+        {{ .CLI_ARGS }}
+      - PATH="${GOBIN}:${PATH}" migrate
+        create
+        -ext sql
+        -dir ./internal/sql/sqlite/migrations
+        {{ .CLI_ARGS }}
+  tools:
+    internal: true
+    run: once
+    cmds:
+      - go install -v google.golang.org/protobuf/cmd/protoc-gen-go@{{ .PROTOC_GEN_GO_VERSION }}
+      - go install -v google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{ .PROTOC_GEN_GO_GRPC_VERSION }}
+      - go install -v github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@{{ .PROTOC_GEN_GRPC_GATEWAY_VERSION }}
+      - go install -v github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@{{ .PROTOC_GEN_GRPC_GATEWAY_VERSION }}
+      - go install -v -tags 'postgres sqlite' github.com/golang-migrate/migrate/v4/cmd/migrate@{{ .MIGRATE_VERSION }}
+
+  local-up:
+    desc: "Start local development environment"
+    cmds:
+      - docker-compose 
+        --file hack/local/docker-compose.yml
+        --project-directory .
+        up
+        --build
+        --detach
+        --wait
+  local-down:
+    desc: "Stop local development environment"
+    cmds:
+      - docker-compose 
+        --file hack/local/docker-compose.yml
+        --project-directory .
+        down
+  local-migrate-up:
+    desc: "Run migrations on local development environment"
+    cmds:
+      - PATH="${GOBIN}:${PATH}" migrate
+        -path ./internal/sql/postgres/migrations/
+        -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=${POSTGRES_SSL_MODE}
+        up
+  local-migrate-down:
+    desc: "Reset database on local development environment"
+    cmds:
+      - PATH="${GOBIN}:${PATH}" migrate
+        -path ./internal/sql/postgres/migrations/
+        -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=${POSTGRES_SSL_MODE}
+        down -all
+
+  website-start:
+    dir: website
+    deps:
+      - website-prepare
+    cmds:
+      - npm run start
+  website-build:
+    dir: website
+    cmds:
+      - npm run build
+  website-serve:
+    dir: website
+    cmds:
+      - npm run serve
+  website-deploy:
+    dir: website
+    cmds:
+      - npm run deploy
+  website-prepare:
+    internal: true
+    run: once
+    dir: website
+    cmds:
+      - npm install

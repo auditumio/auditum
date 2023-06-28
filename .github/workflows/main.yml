@@ -1,0 +1,80 @@
+name: main
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_DB: auditum_db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+        options: >-
+          --health-cmd "pg_isready -U user"
+          --health-interval 100ms
+          --health-timeout 10s
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Setup Go
+        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Download dependencies
+        run: |
+          go mod download
+
+      - name: Run unit tests
+        run: |
+          go test -v -race -coverprofile=coverage.txt -covermode=atomic $(go list ./...)
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@639cd343e1d3b897ff35927a75193d57cfcba299 # v3.6.0
+        with:
+          version: v1.52.2
+          args: --verbose
+          # See: https://github.com/golangci/golangci-lint-action/issues/244
+          skip-pkg-cache: true
+          skip-build-cache: true
+
+      - name: Build
+        run: |
+          go build -v -o ./bin/auditum ./cmd/auditum
+
+      - name: Run integration tests
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
+          POSTGRES_DBNAME: auditum_db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_SSL_MODE: disable
+        run: |
+          go test \
+            -tags "integration postgres" \
+            -v \
+            -p 1 \
+            -count 1 \
+            ./internal/sql/... \
+            -run "TestIntegration"
+          go test \
+            -tags "integration sqlite" \
+            -v \
+            -p 1 \
+            -count 1 \
+            ./internal/sql/... \
+            -run "TestIntegration"

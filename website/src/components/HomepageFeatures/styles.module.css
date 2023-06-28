@@ -1,0 +1,23 @@
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+
+  fill: var(--ifm-color-primary-dark);
+}
+
+@font-face {
+  font-family: Quantico;
+  src: url('/fonts/Quantico-Regular.ttf');
+  font-weight: normal;
+}
+
+.fontQuantico {
+  font-family: Quantico, system-ui;
+}

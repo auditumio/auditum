@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package infragmo.auditum.v1alpha1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "auditumv1alpha1";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Auditum API";
+    version: "v1alpha1";
+  };
+  base_path: "/api/v1alpha1";
+  consumes: ["application/json"];
+  produces: ["application/json", "application/json+pretty"];
+};

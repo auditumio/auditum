@@ -1,0 +1,23 @@
+# Auditum configuration file.
+
+log:
+  level: "debug"
+  format: "text"
+
+tracing:
+  enabled: true
+  exporter: jaeger
+  jaeger:
+    endpoint: "http://localhost:14268/api/traces"
+
+store:
+  type: sqlite
+
+settings:
+  records:
+    updateEnabled: true
+    deleteEnabled: true
+    restrictions:
+      labels:
+        keyMaxSizeBytes: 128
+        valueMaxSizeBytes: 512

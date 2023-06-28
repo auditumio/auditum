@@ -1,0 +1,340 @@
+syntax = "proto3";
+
+package infragmo.auditum.v1alpha1;
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "auditumv1alpha1";
+
+// Represents an audit record.
+message Record {
+  // Internal record identifier.
+  string id = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      // This is for methods that refer to this field as HTTP path parameter.
+      field_configuration: {path_param_name: "record_id"}
+    }
+  ];
+
+  // Identifier of the project the record belongs to.
+  string project_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      // This is for methods that refer to this field as HTTP path parameter.
+      field_configuration: {path_param_name: "project_id"}
+    }
+  ];
+
+  // Time when the record was created.
+  google.protobuf.Timestamp create_time = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Labels for the record that can be used for filtering.
+  // The labels are indexed, unlike metadata fields, which means it is possible
+  // to find records by their labels.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+  // Keys must be at least 1 byte in length.
+  // Configurable defaults:
+  // Keys must be at most 64 bytes in length.
+  // Values must be at most 256 bytes in length.
+  // The total size of all keys and values must be at most 2048 bytes.
+  //
+  // EXAMPLE.
+  // In an example social website domain, records for both POST and COMMENT
+  // resources can be created with "post_id" label. This way all records related to the
+  // post and its comments can be retrieved in chronological order with one
+  // request by filtering with "post_id" label.
+  //
+  // BEST PRACTICE.
+  // - Add only labels that are critical for chronological retrieval of
+  //   records related to multiple resources.
+  // - Do not add labels for standard fields (such as resource type) as they
+  //   are already available for filtering.
+  map<string, string> labels = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Record resource.
+  Resource resource = 5 [(google.api.field_behavior) = REQUIRED];
+
+  // Record operation.
+  Operation operation = 6 [(google.api.field_behavior) = REQUIRED];
+
+  // Record actor.
+  Actor actor = 7 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Represents the audit record resource.
+message Resource {
+  // Type of the resource.
+  // This field may be used to distinguish different kinds of resources from
+  // each other.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // EXAMPLE.
+  // In an example social website domain, the following resource types can be
+  // used:
+  // - POST for content post;
+  // - COMMENT for comment to a post.
+  //
+  // BEST PRACTICE.
+  // - Match resource types according to your business domain model.
+  // - Keep the variety of resource types under control. This will make it
+  //   easier to filter and analyze records.
+  string type = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Domain/application specific identifier of the resource.
+  // This field uniquely identifies the resource.
+  // The id must be unique within a `type`.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // EXAMPLE.
+  // In an example social website domain, the value can represent post id,
+  // comment id, etc.
+  // For singleton resources the name can be used as a resource identifier,
+  // e.g. "site_settings" for global site settings that you want to audit.
+  string id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Custom properties related to the resource.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+  // Keys must be at least 1 byte in length.
+  // Configurable defaults:
+  // Keys must be at most 64 bytes in length.
+  // Values must be at most 256 bytes in length.
+  // The total size of all keys and values must be at most 2048 bytes.
+  map<string, string> metadata = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // A list of changes for the resource.
+  // This can be used to provide context into what is actually changed.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The number of changes must be at most 20 changes.
+  //
+  // BEST PRACTICE.
+  // - Add only changes that are critical for audit trail. Do not add the whole
+  //   resource as a change, as it will bloat the audit log, making it harder to
+  //   trace truly important changes. Instead, add only the fields that were
+  //   actually changed.
+  // - There are two strategies for recording operation about resource creation:
+  //   1) Do not add any changes about resource creation.
+  //      If a particular resource attribute was never changed, the state of the
+  //      resource itself already provides information about this attribute.
+  //   2) Add a change about resource creation with all resource fields. For
+  //      updates, still follow the rule of adding only changed fields.
+  repeated ResourceChange changes = 4 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Represents the audit record resource change item.
+message ResourceChange {
+  // Name of the change.
+  // The name should answer the question "WHAT is changed?".
+  // This may be used to distinguish different kinds of resource fields in the
+  // set of changes.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // EXAMPLE.
+  // In an example social website domain, assuming we are recording post update
+  // where its title was changed, this field can be set to "title".
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Change description.
+  // This provides human-readable description of this particular change.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 1024 bytes in length.
+  string description = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Original value before the operation.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 4096 bytes in length.
+  google.protobuf.Value old_value = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Changed value of after the operation.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 4096 bytes in length.
+  google.protobuf.Value new_value = 4 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Represents the audit record operation.
+message Operation {
+  // Type of the operation.
+  // This field may be used to categorize operations / actions / events.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // EXAMPLE.
+  // In an example social website domain, the following operation types can be
+  // used:
+  // - CREATE when the post or comment is created;
+  // - UPDATE when the post or comment post is updated;
+  // - DELETE when the post or comment post is deleted.
+  //
+  // BEST PRACTICE.
+  // - Use `type` for high-level categorization and `id` for identification.
+  //   For example, there can be multiple ways to create the resource: a user
+  //   can create a resource from an app, an administrator can create a resource
+  //   from the back office, a batch of resources can be created from the API -
+  //   all of these operations can be of type CREATE.
+  string type = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Domain/application specific identifier of the operation.
+  // This field identifies the operation that is audited.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 512 bytes in length.
+  //
+  // EXAMPLE.
+  // A few examples on how the operation for creating a post comment can be
+  // identified:
+  // - Simple identifier like "CreateComment"
+  // - Event name, e.g. "CommentCreated"
+  // - API operation for HTTP, e.g. "POST /posts/101/comments"
+  // - API operation for gRPC, e.g. "example.v1.PostService/CreateComment"
+  // - Serverless function name
+  // - etc.
+  //
+  // BEST PRACTICE.
+  // - There might be different approaches to identifying operations, see EXAMPLE
+  //   for ideas and suggestions. It is recommended to keep it consistent.
+  // - Remember that `type` field can be used for high-level categorization, so
+  //   it is possible to have different operations with the same type. See `type`
+  //   field description.
+  string id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Time when the operation occurred.
+  google.protobuf.Timestamp time = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // Custom properties related to the operation.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+  // Keys must be at least 1 byte in length.
+  // Configurable defaults:
+  // Keys must be at most 64 bytes in length.
+  // Values must be at most 256 bytes in length.
+  // The total size of all keys and values must be at most 2048 bytes.
+  map<string, string> metadata = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Trace context related to the operation.
+  TraceContext trace_context = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Status of the operation to distinguish whether it succeeded or failed.
+  //
+  // BEST PRACTICE.
+  // - Depending on your use case, it may be important not only to record
+  //   completed operations, but failed attempts too. Use this field to
+  //   distinguish the operation outcome.
+  OperationStatus.Enum status = 6 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Represents the audit record operation trace context.
+//
+// Adheres to the W3C Trace Context specification.
+// See: https://www.w3.org/TR/trace-context/
+message TraceContext {
+  // Traceparent Header value.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Must be valid W3C traceparent header value.
+  // See: https://www.w3.org/TR/trace-context/#traceparent-header
+  string traceparent = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Tracestate Header value.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Must be valid W3C tracestate header value.
+  // See: https://www.w3.org/TR/trace-context/#tracestate-header
+  // Maximum length of the tracestate is 512 bytes.
+  // Can be provided only if valid traceparent is provided as well.
+  string tracestate = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Wraps operation status enumeration.
+message OperationStatus {
+  // Enumerates available operation statuses.
+  enum Enum {
+    // Operation status not provided or unknown.
+    UNSPECIFIED = 0;
+
+    // Operation succeeded.
+    SUCCEEDED = 1;
+
+    // Operation failed.
+    FAILED = 2;
+  }
+}
+
+// Represents the audit record actor.
+message Actor {
+  // Type of the actor.
+  // This field may be used to distinguish different kinds of actors from
+  // each other.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // EXAMPLE.
+  // In an example social website domain, the following actor types can be used:
+  // - USER for a person that updates the post;
+  // - SERVICE_ACCOUNT for a system that automatically archives posts when
+  //   they become outdated.
+  string type = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Domain/application specific identifier of the actor.
+  // This field uniquely identifies the actor who triggered the operation.
+  // The id must be unique within a `type`.
+  //
+  // REQUIREMENTS.
+  // Configurable defaults:
+  // The value must be at most 256 bytes in length.
+  //
+  // BEST PRACTICE.
+  // - The id may refer to a user (staff, customer, etc) or to a system
+  //   (service account, etc), depending on the context of the operation.
+  // - This field is required. If, for any reason, there is a case when it is
+  //   impossible or not desirable to provide actor identity, use a consistent
+  //   stub value like "unknown".
+  string id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Custom properties related to the actor.
+  //
+  // REQUIREMENTS.
+  // Mandatory:
+  // Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+  // Keys must be at least 1 byte in length.
+  // Configurable defaults:
+  // Keys must be at most 64 bytes in length.
+  // Values must be at most 256 bytes in length.
+  // The total size of all keys and values must be at most 2048 bytes.
+  map<string, string> metadata = 3 [(google.api.field_behavior) = OPTIONAL];
+}

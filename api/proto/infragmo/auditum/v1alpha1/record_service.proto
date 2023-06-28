@@ -1,0 +1,215 @@
+syntax = "proto3";
+
+package infragmo.auditum.v1alpha1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "infragmo/auditum/v1alpha1/record.proto";
+
+option go_package = "auditumv1alpha1";
+
+service RecordService {
+  rpc CreateRecord(CreateRecordRequest) returns (CreateRecordResponse) {
+    option (google.api.http) = {
+      post: "/projects/{record.project_id}/records"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create record"
+      tags: ["Records"]
+    };
+  }
+
+  rpc BatchCreateRecords(BatchCreateRecordsRequest) returns (BatchCreateRecordsResponse) {
+    option (google.api.http) = {
+      post: "/projects/{project_id}/records:batchCreate"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create multiple records in a batch"
+      tags: ["Records"]
+    };
+  }
+
+  rpc GetRecord(GetRecordRequest) returns (GetRecordResponse) {
+    option (google.api.http) = {
+      get: "/projects/{project_id}/records/{record_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get record"
+      tags: ["Records"]
+    };
+  }
+
+  rpc ListRecords(ListRecordsRequest) returns (ListRecordsResponse) {
+    option (google.api.http) = {
+      get: "/projects/{project_id}/records"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List records"
+      tags: ["Records"]
+    };
+  }
+
+  rpc UpdateRecord(UpdateRecordRequest) returns (UpdateRecordResponse) {
+    option (google.api.http) = {
+      patch: "/projects/{record.project_id}/records/{record.id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update record"
+      tags: ["Records"]
+    };
+  }
+
+  rpc DeleteRecord(DeleteRecordRequest) returns (DeleteRecordResponse) {
+    option (google.api.http) = {
+      delete: "/projects/{project_id}/records/{record_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete record"
+      tags: ["Records"]
+    };
+  }
+}
+
+message CreateRecordRequest {
+  // Record to create.
+  Record record = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateRecordResponse {
+  // Created record.
+  Record record = 1;
+}
+
+message BatchCreateRecordsRequest {
+  // ID of the project to create records in.
+  string project_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Records to create.
+  // Maximum number of records in a batch is 100.
+  repeated Record records = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      max_items: 100
+    }
+  ];
+}
+
+message BatchCreateRecordsResponse {
+  // Created records.
+  repeated Record records = 1;
+}
+
+message GetRecordRequest {
+  // ID of the project that owns the record.
+  string project_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // ID of the record to retrieve.
+  string record_id = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetRecordResponse {
+  // Found record.
+  Record record = 1;
+}
+
+message ListRecordsRequest {
+  // ID of the project that owns the records.
+  string project_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Describes a filter to apply to the list of records.
+  message Filter {
+    // Return records with the provided labels.
+    // This filter works as "has" semantic: all provided labels must be present
+    // in the record, but returned records may have other labels.
+    map<string, string> labels = 1 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided resource type.
+    string resource_type = 2 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided resource ID.
+    string resource_id = 3 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided operation type.
+    string operation_type = 4 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided operation ID.
+    string operation_id = 5 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with operation time starting from the provided time, inclusive.
+    google.protobuf.Timestamp operation_time_from = 6 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with operation time up to the provided time, exclusive.
+    google.protobuf.Timestamp operation_time_to = 7 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided actor type.
+    string actor_type = 8 [(google.api.field_behavior) = OPTIONAL];
+
+    // Return records with the provided actor ID.
+    string actor_id = 9 [(google.api.field_behavior) = OPTIONAL];
+  }
+
+  // Filter to apply to the list of records.
+  // All filter fields are combined with logical AND.
+  // All filter fields are optional.
+  Filter filter = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // The maximum number of records to return. The service may return fewer than
+  // this value.
+  // If unspecified, at most 10 records will be returned.
+  // The maximum value is 100; values above 100 will be coerced to 100.
+  int32 page_size = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // A page token, received from a previous `ListRecords` call.
+  // Provide this to retrieve the subsequent page.
+  //
+  // When paginating, all other parameters provided to `ListRecords` must match
+  // the call that provided the page token.
+  string page_token = 4 [(google.api.field_behavior) = OPTIONAL];
+}
+
+message ListRecordsResponse {
+  // Found records.
+  repeated Record records = 1;
+
+  // A token that can be sent as `page_token` to retrieve the next page.
+  // If this field is empty, there are no subsequent pages.
+  string next_page_token = 2;
+}
+
+message UpdateRecordRequest {
+  // Record to update.
+  Record record = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Field mask indicating a list of fields to update.
+  // Currently supported fields:
+  // - `labels`
+  // - `resource`
+  // - `operation`
+  // - `actor`
+  // Support for other fields may be added in the future.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateRecordResponse {
+  // Updated record.
+  Record record = 1;
+}
+
+message DeleteRecordRequest {
+  // ID of the project that owns the record.
+  string project_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // ID of the record to delete.
+  string record_id = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteRecordResponse {
+  // No response data.
+}

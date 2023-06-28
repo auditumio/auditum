@@ -1,0 +1,28 @@
+version: v1
+
+lint:
+  use:
+    - DEFAULT
+    - COMMENTS
+    - UNARY_RPC
+    - PACKAGE_NO_IMPORT_CYCLE
+  except:
+    # Instead of enum prefixes we use wrapper-messages for enums.
+    - ENUM_VALUE_PREFIX
+    - ENUM_ZERO_VALUE_SUFFIX
+    # Some comments may be missing.
+    - COMMENT_SERVICE
+    - COMMENT_MESSAGE
+    - COMMENT_FIELD
+    - COMMENT_ENUM
+    - COMMENT_ENUM_VALUE
+    - COMMENT_RPC
+    - COMMENT_ONEOF
+  ignore:
+    - google
+    - protoc-gen-openapiv2
+
+breaking:
+  use:
+    - PACKAGE
+    - FILE

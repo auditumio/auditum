@@ -1,0 +1,20 @@
+version: v1
+
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/infragmo/auditum/api/gen/go
+
+plugins:
+  - name: go
+    out: api/gen/go
+    opt:
+      - paths=source_relative
+  - name: go-grpc
+    out: api/gen/go
+    opt:
+      - paths=source_relative
+  - name: grpc-gateway
+    out: api/gen/go
+    opt:
+      - paths=source_relative

@@ -1,0 +1,23 @@
+name: auditum-test
+
+services:
+  postgres:
+    container_name: "auditum-test-postgres"
+    image: "postgres:14-alpine"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE:-auditum_db}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - auditum
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USERNAME}
+      interval: 100ms
+      timeout: 10s
+
+networks:
+  auditum:
+    name: auditum

@@ -1,0 +1,228 @@
+# Auditum configuration file.
+#
+# The following are the default values for the configuration properties.
+# You can override them by changing the values. You can also delete everything
+# you don't need to change and only keep the values you want to override.
+#
+# Configuration can also be set via environment variables. Environment variables
+# are prefixed with `AUDITUM_` and use configuration keys separated by underscores.
+# For example, to change "log.format" to "text", set the environment variable
+# in the following form: `AUDITUM_log_format=text`.
+
+# Configuration for logging.
+log:
+  # The logging format.
+  # Supported values: json, text.
+  # Default: json.
+  format: json
+
+  # The logging level.
+  # Supported values: debug, info, warn, error.
+  # Default: info.
+  level: info
+
+# Configuration for tracing.
+tracing:
+  # Whether to enable tracing.
+  # Default: false.
+  enabled: false
+
+  # Where to export traces/spans.
+  # Supported values: log, jaeger.
+  # Default: log.
+  exporter: log
+
+  # Log exporter configuration. In effect if exporter is log.
+  log:
+    # Whether to enable pretty printing.
+    # Default: false.
+    pretty: false
+
+  # Jaeger exporter configuration. In effect if exporter is jaeger.
+  jaeger:
+    # The Jaeger endpoint.
+    # Default: http://localhost:14268/api/traces.
+    endpoint: "http://localhost:14268/api/traces"
+
+# Configuration for HTTP server.
+http:
+  # The port to listen on for HTTP requests.
+  # Default: 8080.
+  port: 8080
+
+# Configuration for gRPC server.
+grpc:
+  # The port to listen on for gRPC requests.
+  # Default: 9090.
+  port: 9090
+
+# Configuration for the underlying database to store data.
+store:
+  # The type of database to use.
+  # Currently supported: sqlite, postgres.
+  # Default: sqlite.
+  type: sqlite
+
+  # SQLite configuration. In effect if type is sqlite.
+  sqlite:
+    # The path to the SQLite database file.
+    # Special value ":memory:" uses an in-memory database that is not persistent.
+    # Default: ":memory:".
+    databasePath: ":memory:"
+
+    # The path to the SQLite database migrations directory.
+    # Default: "./internal/sql/sqlite/migrations".
+    migrationsPath: "./internal/sql/sqlite/migrations"
+
+  # PostgreSQL configuration. In effect if type is postgres.
+  postgres:
+    # PostgreSQL database instance host.
+    # Required.
+    host: ""
+
+    # PostgreSQL database instance port.
+    # Default: 5432.
+    port: 5432
+
+    # PostgreSQL database name.
+    # Default: auditum_db.
+    database: auditum_db
+
+    # PostgreSQL database user.
+    # Required.
+    username: ""
+
+    # PostgreSQL database password.
+    # Required.
+    password: ""
+
+    # PostgreSQL database SSL mode.
+    # Default: require.
+    sslmode: require
+
+    # The path to the PostgreSQL database migrations directory.
+    # Default: "./internal/sql/postgres/migrations".
+    migrationsPath: "./internal/sql/postgres/migrations"
+
+# Global settings.
+settings:
+  # Settings related to records.
+  records:
+    # Whether to enable the update record feature.
+    # If disabled, records are considered immutable and cannot be updated.
+    # May be overridden for a specific project.
+    # Default: false.
+    updateEnabled: false
+
+    # Whether to enable the delete record feature.
+    # If disabled, records cannot be deleted.
+    # May be overridden for a specific project.
+    # Default: false.
+    deleteEnabled: false
+
+    # Restrictions for record fields.
+    restrictions:
+      # Restrictions for labels.
+      labels:
+        # Maximum key size in bytes.
+        keyMaxSizeBytes: 64
+
+        # Maximum value size in bytes.
+        valueMaxSizeBytes: 256
+
+        # Maximum total size of all keys and values in bytes.
+        totalMaxSizeBytes: 2048
+
+      # Restrictions for resource.
+      resource:
+        # Restrictions for resource type.
+        type:
+          # Maximum size in bytes.
+          maxSizeBytes: 256
+
+        # Restrictions for resource id.
+        id:
+          # Maximum size in bytes.
+          maxSizeBytes: 256
+
+        # Restrictions for resource metadata.
+        metadata:
+          # Maximum key size in bytes.
+          keyMaxSizeBytes: 64
+
+          # Maximum value size in bytes.
+          valueMaxSizeBytes: 256
+
+          # Maximum total size of all keys and values in bytes.
+          totalMaxSizeBytes: 2048
+
+        # Restrictions for resource changes.
+        changes:
+          # Maximum number of changes.
+          totalMaxCount: 20
+
+          # Restrictions for change name.
+          name:
+            # Maximum size in bytes.
+            maxSizeBytes: 256
+
+          # Restrictions for change description.
+          description:
+            # Maximum size in bytes.
+            maxSizeBytes: 1024
+
+          # Restrictions for change old value.
+          oldValue:
+            # Maximum size in bytes.
+            maxSizeBytes: 4096
+
+          # Restrictions for change new value.
+          newValue:
+            # Maximum size in bytes.
+            maxSizeBytes: 4096
+
+      # Restrictions for operation.
+      operation:
+        # Restrictions for operation type.
+        type:
+          # Maximum size in bytes.
+          maxSizeBytes: 256
+
+        # Restrictions for operation id.
+        id:
+          # Maximum size in bytes.
+          maxSizeBytes: 512
+
+        # Restrictions for operation metadata.
+        metadata:
+          # Maximum key size in bytes.
+          keyMaxSizeBytes: 64
+
+          # Maximum value size in bytes.
+          valueMaxSizeBytes: 256
+
+          # Maximum total size of all keys and values in bytes.
+          totalMaxSizeBytes: 2048
+
+      # Restrictions for actor.
+      actor:
+        # Restrictions for actor type.
+        type:
+          # Maximum size in bytes.
+          maxSizeBytes: 256
+
+        # Restrictions for actor id.
+        id:
+          # Maximum size in bytes.
+          maxSizeBytes: 256
+
+        # Restrictions for actor metadata.
+        metadata:
+          # Maximum key size in bytes.
+          keyMaxSizeBytes: 64
+
+          # Maximum value size in bytes.
+          valueMaxSizeBytes: 256
+
+          # Maximum total size of all keys and values in bytes.
+          totalMaxSizeBytes: 2048

@@ -1,0 +1,14 @@
+# Auditum configuration file.
+
+log:
+  level: "debug"
+  format: "text"
+
+store:
+  type: postgres
+
+  postgres:
+    host: "127.0.0.1"
+    username: "" # Provided via AUDITUM_store_postgres_username env var.
+    password: "" # Provided via AUDITUM_store_postgres_password env var.
+    sslmode: "disable"

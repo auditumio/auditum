@@ -1,0 +1,57 @@
+# Reference: https://golangci-lint.run/usage/configuration/
+
+run:
+  timeout: 5m
+
+  build-tags:
+    - integration
+    - postgres
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - depguard
+    - dogsled
+    - errcheck
+    - exportloopref
+    - gci
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - prealloc
+    - revive
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/infragmo)
+  nolintlint:
+    allow-unused: false
+    require-explanation: true
+    require-specific: true
+
+issues:
+  exclude-rules:
+    - path: _test.go
+      linters:
+        - goconst
