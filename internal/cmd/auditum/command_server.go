@@ -18,6 +18,7 @@ import (
 	"github.com/infragmo/auditum/pkg/fragma/grpcx"
 	"github.com/infragmo/auditum/pkg/fragma/httpx"
 	"github.com/infragmo/auditum/pkg/fragma/otelx"
+	"github.com/infragmo/auditum/pkg/fragma/uds"
 )
 
 func executeServer(conf *Configuration, log *zap.Logger) int {
@@ -89,6 +90,25 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 
 	store := sql.NewStore(db)
 
+	unixSocketAvailable := true
+	if err := uds.IsAvailable(); err != nil {
+		log.Warn(
+			"Unix socket is not available. "+
+				"gRPC gateway will connect to gRPC server via TCP.",
+			zap.Error(err),
+		)
+		unixSocketAvailable = false
+	}
+
+	unixSocket := ""
+	if unixSocketAvailable {
+		unixSocket, err = uds.NewSocket()
+		if err != nil {
+			log.Error("Failed to create UNIX socket", zap.Error(err))
+			return exitCodeStartFailure
+		}
+	}
+
 	grpcServer := grpcx.NewServer(log)
 
 	healthServer := healthv1.NewHealthServer()
@@ -111,7 +131,21 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 	grpcx.InitPrometheusMetrics(grpcServer)
 
 	grpcServerAddr := ":" + conf.GRPC.Port
-	grpcServerController := grpcx.NewServerController(grpcServerAddr, grpcServer, log)
+
+	var grpcServerControllerOpts []grpcx.ServerControllerOption
+	if unixSocketAvailable {
+		grpcServerControllerOpts = append(
+			grpcServerControllerOpts,
+			grpcx.ServerControllerWithUnixSocket(unixSocket),
+		)
+	}
+
+	grpcServerController := grpcx.NewServerController(
+		grpcServerAddr,
+		grpcServer,
+		log,
+		grpcServerControllerOpts...,
+	)
 
 	if err := grpcServerController.Start(ctx); err != nil {
 		log.Error("gRPC server start error", zap.Error(err))
@@ -127,7 +161,12 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 		),
 	)
 
-	if err := grpcGateway.ConnectAndRegister(grpcServerAddr); err != nil {
+	grpcGatewayUpstreamAddr := grpcServerAddr
+	if unixSocketAvailable {
+		grpcGatewayUpstreamAddr = "unix://" + unixSocket
+	}
+
+	if err := grpcGateway.ConnectAndRegister(grpcGatewayUpstreamAddr); err != nil {
 		log.Error("gRPC gateway failed to connect to gRPC server", zap.Error(err))
 		return exitCodeStartFailure
 	}
@@ -175,6 +214,12 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 	if err := tracingProvider.Close(ctx); err != nil {
 		log.Error("Tracing provider close error", zap.Error(err))
 		exitCode = exitCodeRunFailure
+	}
+
+	if unixSocket != "" {
+		if err := uds.CleanupSocket(unixSocket); err != nil {
+			log.Warn("Cleanup unix socket error", zap.Error(err))
+		}
 	}
 
 	slog.Infof("%s %s is stopped", appName, commandNameServer)

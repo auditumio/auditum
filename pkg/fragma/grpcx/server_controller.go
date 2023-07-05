@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"strings"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -13,19 +14,40 @@ import (
 )
 
 type ServerController struct {
-	addr   string
-	server *grpc.Server
-	log    *zap.Logger
-	errs   chan error
+	addr     string
+	unixAddr string
+	server   *grpc.Server
+	log      *zap.Logger
+	errs     chan error
 }
 
-func NewServerController(addr string, server *grpc.Server, log *zap.Logger) *ServerController {
-	return &ServerController{
-		addr:   addr,
-		server: server,
+func NewServerController(
+	addr string,
+	server *grpc.Server,
+	log *zap.Logger,
+	opts ...ServerControllerOption,
+) *ServerController {
+	ctrl := &ServerController{
+		addr:     addr,
+		unixAddr: "",
+		server:   server,
 		log: log.Named("grpc_server_controller").
 			With(zap.String("addr", addr)),
 		errs: make(chan error, 1),
+	}
+
+	for _, opt := range opts {
+		opt(ctrl)
+	}
+
+	return ctrl
+}
+
+type ServerControllerOption func(*ServerController)
+
+func ServerControllerWithUnixSocket(path string) ServerControllerOption {
+	return func(c *ServerController) {
+		c.unixAddr = path
 	}
 }
 
@@ -73,6 +95,26 @@ func (sm *ServerController) start() {
 	if err != nil {
 		sm.errs <- err
 		return
+	}
+
+	if sm.unixAddr != "" {
+		lis, err := net.Listen("unix", sm.unixAddr)
+		if err != nil {
+			sm.errs <- err
+			return
+		}
+
+		var wg sync.WaitGroup
+		wg.Add(1)
+		defer wg.Wait()
+
+		go func() {
+			defer wg.Done()
+
+			if err := sm.server.Serve(lis); err != nil {
+				sm.errs <- err
+			}
+		}()
 	}
 
 	if err := sm.server.Serve(lis); err != nil {
