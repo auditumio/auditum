@@ -168,6 +168,26 @@ tasks:
       - go install -v github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@{{ .PROTOC_GEN_GRPC_GATEWAY_VERSION }}
       - go install -v -tags 'postgres sqlite' github.com/golang-migrate/migrate/v4/cmd/migrate@{{ .MIGRATE_VERSION }}
 
+  docker-build:
+    desc: "Build docker image"
+    cmds:
+      - go mod vendor
+      - defer: rm -rf ./vendor/
+      - docker build
+        --tag infragmo/auditum:{{ default "latest" .IMAGE_TAG }}
+        --file Dockerfile
+        .
+  docker-run:
+    desc: "Run docker image"
+    cmds:
+      - docker run
+        --rm
+        --interactive
+        --tty
+        --publish 8080:8080
+        --publish 9090:9090
+        infragmo/auditum:{{ default "latest" .IMAGE_TAG }}
+
   local-up:
     desc: "Start local development environment"
     cmds:
