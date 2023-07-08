@@ -94,7 +94,7 @@ const config = {
       announcementBar: {
         id: 'announcementBar-1', // Increment on change
         content:
-          '⭐️ Auditum just launched, and we would appreciate if you spread the word! Give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/infragmo/auditum">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/auditum">Twitter</a>',
+          '⭐️ Auditum just launched, and we would appreciate if you spread the word! Give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/infragmo/auditum">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/auditumio">Twitter</a>',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: true,
@@ -175,7 +175,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/auditum',
+                href: 'https://twitter.com/auditumio',
               },
               {
                 label: 'Stack Overflow',
