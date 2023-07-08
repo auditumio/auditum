@@ -13,7 +13,10 @@ You can download a binary for your platform from the [releases page](https://git
 ## Docker
 
 The easiest way to run Auditum is to use a Docker image. Images are available on
-[Docker Hub](https://hub.docker.com/r/infragmo/auditum).
+these registries:
+
+- [Docker Hub](https://hub.docker.com/r/infragmo/auditum) - `infragmo/auditum`
+- [GitHub Container Registry](https://github.com/infragmo/auditum/pkgs/container/auditum) - `ghcr.io/infragmo/auditum`
 
 Example of running Auditum in a Docker container:
 
@@ -21,6 +24,14 @@ Example of running Auditum in a Docker container:
 docker run \
   -p 8080:8080 \
   infragmo/auditum:latest
+```
+
+Or, using a specific version from GitHub Container Registry:
+
+```shell
+docker run \
+  -p 8080:8080 \
+  ghcr.io/infragmo/auditum:0.1.0
 ```
 
 ## Kubernetes

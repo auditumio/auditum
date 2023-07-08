@@ -1,0 +1,11 @@
+*
+!/api/
+!/cmd/
+!/config/
+!/internal/
+!/pkg/
+!/vendor/
+!/.dockerignore
+!/Dockerfile
+!/go.mod
+!/go.sum

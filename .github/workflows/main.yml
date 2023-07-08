@@ -3,7 +3,7 @@ name: main
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
       - '*'
@@ -25,6 +25,15 @@ jobs:
           --health-timeout 10s
         ports:
           - 5432:5432
+    env:
+      IMAGE_REGISTRY_GITHUB: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+      # For PR, we only build for AMD64, just to be sure that Docker build works.
+      # For main branch and tags we also build for ARM64.
+      # Note that building for ARM64 is very slow.
+      IMAGE_PLATFORMS: |
+        linux/amd64
+        ${{ github.event_name != 'pull_request' && 'linux/arm64' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
@@ -78,3 +87,57 @@ jobs:
             -count 1 \
             ./internal/sql/... \
             -run "TestIntegration"
+
+      - name: Extract Docker image metadata
+        id: docker_meta
+        uses: docker/metadata-action@818d4b7b91585d195f67373fd9cb0332e31a7175 # v4.6.0
+        with:
+          images: |
+            ${{ env.IMAGE_NAME }}
+            ${{ env.IMAGE_REGISTRY_GITHUB }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=pr
+            type=ref,event=branch,enable={{ is_default_branch }}
+            type=semver,pattern={{ version }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # if: github.event_name != 'pull_request'
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY_GITHUB }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        # if: github.event_name != 'pull_request'
+
+      # Used for arm images.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # v2.2.0
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@2a1a44ac4aa01993040736bd95bb470da1a38365 # v2.9.0
+
+      - name: Vendor dependencies
+        run: |
+          go mod vendor
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
+        with:
+          context: .
+          platforms: ${{ env.PLATFORMS }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          push: true
+          # push: ${{ github.event_name != 'pull_request' }}
+
+      - name: Cleanup vendor dependencies
+        run: |
+          rm -rf ./vendor/

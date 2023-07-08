@@ -10,3 +10,7 @@ insert_final_newline = true
 [*.proto]
 indent_style = space
 indent_size = 2
+
+[Dockerfile]
+indent_style = space
+indent_size = 2
