@@ -1,2 +1,5 @@
+# We put binaries to ./bin/
 /bin/
 
+# GoReleaser uses ./dist/
+/dist/
