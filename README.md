@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/infragmo/auditum/actions/workflows/main.yml" target="_blank">
-    <img src="https://github.com/infragmo/auditum/actions/workflows/main.yml/badge.svg" alt="main">
+    <img src="https://github.com/infragmo/auditum/actions/workflows/main.yml/badge.svg?branch=main&event=push" alt="main">
   </a>
   <a href="https://github.com/infragmo/auditum/blob/main/LICENSE" target="_blank">
     <img src="https://img.shields.io/github/license/infragmo/auditum.svg" alt="GitHub license">

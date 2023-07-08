@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - '*'
@@ -25,15 +27,6 @@ jobs:
           --health-timeout 10s
         ports:
           - 5432:5432
-    env:
-      IMAGE_REGISTRY_GITHUB: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
-      # For PR, we only build for AMD64, just to be sure that Docker build works.
-      # For main branch and tags we also build for ARM64.
-      # Note that building for ARM64 is very slow.
-      IMAGE_PLATFORMS: |
-        linux/amd64
-        ${{ github.event_name != 'pull_request' && 'linux/arm64' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
@@ -88,6 +81,34 @@ jobs:
             ./internal/sql/... \
             -run "TestIntegration"
 
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    env:
+      IMAGE_REGISTRY_GITHUB: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+      # For PR, we only build for AMD64, just to be sure that Docker build works.
+      # For main branch and tags we also build for ARM64.
+      # Note that building for ARM64 is very slow.
+      IMAGE_PLATFORMS: |
+        linux/amd64
+        ${{ github.event_name != 'pull_request' && 'linux/arm64' || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Setup Go
+        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Download dependencies
+        run: |
+          go mod download
+          go mod vendor
+
       - name: Extract Docker image metadata
         id: docker_meta
         uses: docker/metadata-action@818d4b7b91585d195f67373fd9cb0332e31a7175 # v4.6.0
@@ -105,7 +126,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        # if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
@@ -113,31 +134,52 @@ jobs:
           registry: ${{ env.IMAGE_REGISTRY_GITHUB }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        # if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
 
       # Used for arm images.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # v2.2.0
         with:
-          platforms: ${{ env.PLATFORMS }}
+          platforms: ${{ env.IMAGE_PLATFORMS }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@2a1a44ac4aa01993040736bd95bb470da1a38365 # v2.9.0
-
-      - name: Vendor dependencies
-        run: |
-          go mod vendor
 
       - name: Build and push Docker image
         uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
         with:
           context: .
-          platforms: ${{ env.PLATFORMS }}
+          platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
-          push: true
-          # push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' }}
 
-      - name: Cleanup vendor dependencies
+  goreleaser:
+    name: GoReleaser
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Download dependencies
         run: |
-          rm -rf ./vendor/
+          go mod download
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7 # v4.3.0
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_PREVIOUS_TAG: ""
