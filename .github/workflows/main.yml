@@ -23,8 +23,9 @@ jobs:
           POSTGRES_PASSWORD: pass
         options: >-
           --health-cmd "pg_isready -U user"
-          --health-interval 100ms
+          --health-interval 1s
           --health-timeout 10s
+          --health-retries 10
         ports:
           - 5432:5432
     steps:
