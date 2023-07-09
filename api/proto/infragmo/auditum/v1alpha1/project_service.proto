@@ -19,6 +19,7 @@ service ProjectService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create project"
+      description: "Creates a new project."
       tags: ["Projects"]
     };
   }
@@ -29,6 +30,7 @@ service ProjectService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get project"
+      description: "Returns a project by its id."
       tags: ["Projects"]
     };
   }
@@ -39,6 +41,7 @@ service ProjectService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List projects"
+      description: "Returns a list of projects by the provided criteria."
       tags: ["Projects"]
     };
   };
@@ -50,6 +53,7 @@ service ProjectService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update project"
+      description: "Updates an existing project."
       tags: ["Projects"]
     };
   };
