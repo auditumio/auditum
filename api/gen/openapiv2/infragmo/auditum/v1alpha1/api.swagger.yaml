@@ -1,7 +1,29 @@
 swagger: "2.0"
 info:
   title: Auditum API
+  description: |-
+    This is the specification for Auditum HTTP API.
+
+    For gRPC API, see [repository](https://github.com/infragmo/auditum/tree/main/api/proto/infragmo/auditum/v1alpha1).
+
+    For more information, see [Usage Guide](/docs/usage-guide/).
+
+    For any issues and feature requests, please use [GitHub Issue Tracker](https://github.com/infragmo/auditum/issues)
   version: v1alpha1
+tags:
+  - name: Projects
+    description: |-
+      **Project** is the top-level resource in *Auditum*. **Projects** contain all other resources like **Records**.
+
+      A project is a logical grouping of records. Typically, a project is created for each of the applications that is being audited.
+    externalDocs:
+      description: 'Usage Guide :: Create Project'
+      url: /docs/usage-guide/create-project
+  - name: Records
+    description: '**Record** is the core resource in *Auditum*. **Records** represent audit trail records a.k.a. audit logs.'
+    externalDocs:
+      description: 'Usage Guide :: Create Records'
+      url: /docs/usage-guide/create-records
 basePath: /api/v1alpha1
 consumes:
   - application/json
@@ -12,6 +34,7 @@ paths:
   /projects:
     get:
       summary: List projects
+      description: Returns a list of projects by the provided criteria.
       operationId: ListProjects
       responses:
         "200":
@@ -47,6 +70,7 @@ paths:
         - Projects
     post:
       summary: Create project
+      description: Creates a new project.
       operationId: CreateProject
       responses:
         "200":
@@ -68,6 +92,7 @@ paths:
   /projects/{project_id}:
     get:
       summary: Get project
+      description: Returns a project by its id.
       operationId: GetProject
       responses:
         "200":
@@ -88,6 +113,7 @@ paths:
         - Projects
     patch:
       summary: Update project
+      description: Updates an existing project.
       operationId: UpdateProject
       responses:
         "200":
@@ -156,6 +182,7 @@ paths:
   /projects/{project_id}/records:
     get:
       summary: List records
+      description: Returns a list of records by the provided criteria.
       operationId: ListRecords
       responses:
         "200":
@@ -241,8 +268,12 @@ paths:
           type: string
       tags:
         - Records
+      externalDocs:
+        description: 'Usage Guide :: Search Records'
+        url: /docs/usage-guide/search-records
     post:
       summary: Create record
+      description: Creates a new audit record.
       operationId: CreateRecord
       responses:
         "200":
@@ -326,6 +357,7 @@ paths:
   /projects/{project_id}/records/{record_id}:
     get:
       summary: Get record
+      description: Returns a record by its id.
       operationId: GetRecord
       responses:
         "200":
@@ -351,6 +383,10 @@ paths:
         - Records
     delete:
       summary: Delete record
+      description: |-
+        Deletes an existing project.
+
+        ⚠️ NOTE: this operation is disabled by default and may be enabled per project or globally.
       operationId: DeleteRecord
       responses:
         "200":
@@ -374,8 +410,15 @@ paths:
           type: string
       tags:
         - Records
+      externalDocs:
+        description: 'Usage Guide :: Delete Records'
+        url: /docs/usage-guide/delete-records
     patch:
       summary: Update record
+      description: |-
+        Updates an existing project.
+
+        ⚠️ NOTE: this operation is disabled by default and may be enabled per project or globally.
       operationId: UpdateRecord
       responses:
         "200":
@@ -468,9 +511,13 @@ paths:
               - update_mask
       tags:
         - Records
+      externalDocs:
+        description: 'Usage Guide :: Update Records'
+        url: /docs/usage-guide/update-records
   /projects/{project_id}/records:batchCreate:
     post:
-      summary: Create multiple records in a batch
+      summary: Batch create records
+      description: Creates multiple audit records in a batch.
       operationId: BatchCreateRecords
       responses:
         "200":

@@ -20,6 +20,7 @@ service RecordService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create record"
+      description: "Creates a new audit record."
       tags: ["Records"]
     };
   }
@@ -30,7 +31,8 @@ service RecordService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Create multiple records in a batch"
+      summary: "Batch create records"
+      description: "Creates multiple audit records in a batch."
       tags: ["Records"]
     };
   }
@@ -41,6 +43,7 @@ service RecordService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get record"
+      description: "Returns a record by its id."
       tags: ["Records"]
     };
   }
@@ -51,7 +54,12 @@ service RecordService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List records"
+      description: "Returns a list of records by the provided criteria."
       tags: ["Records"]
+      external_docs: {
+        description: "Usage Guide :: Search Records"
+        url: "/docs/usage-guide/search-records"
+      }
     };
   }
 
@@ -62,7 +70,15 @@ service RecordService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update record"
+      description:
+        "Updates an existing project.\n\n"
+        "⚠️ NOTE: this operation is disabled by default and may be enabled per "
+        "project or globally."
       tags: ["Records"]
+      external_docs: {
+        description: "Usage Guide :: Update Records"
+        url: "/docs/usage-guide/update-records"
+      }
     };
   }
 
@@ -72,7 +88,15 @@ service RecordService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Delete record"
+      description:
+        "Deletes an existing project.\n\n"
+        "⚠️ NOTE: this operation is disabled by default and may be enabled per "
+        "project or globally."
       tags: ["Records"]
+      external_docs: {
+        description: "Usage Guide :: Delete Records"
+        url: "/docs/usage-guide/delete-records"
+      }
     };
   }
 }
