@@ -3,7 +3,7 @@ module github.com/infragmo/auditum
 go 1.20
 
 require (
-	github.com/caarlos0/env/v8 v8.0.0
+	github.com/caarlos0/env/v9 v9.0.0
 	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
