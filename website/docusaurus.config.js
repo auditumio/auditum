@@ -129,6 +129,14 @@ const config = {
           },
         ],
       },
+      algolia: {
+        appId: '50103BGEZC',
+        apiKey: 'c8ed699ceb86243c34bd7d7089bf8c93',
+        indexName: 'auditum',
+        contextualSearch: true,
+        searchParameters: {},
+        searchPagePath: 'search',
+      },
       footer: {
         style: 'dark',
         links: [
