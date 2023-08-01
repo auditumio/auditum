@@ -87,6 +87,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    permissions:
+      contents: read
+      packages: write
     env:
       IMAGE_REGISTRY_GITHUB: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
