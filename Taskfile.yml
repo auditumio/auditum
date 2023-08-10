@@ -11,6 +11,14 @@ vars:
 env:
   GOBIN: "{{ .ROOT_DIR }}/bin"
 
+  # Local development environment
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: 5432
+  POSTGRES_DATABASE: auditum_db
+  POSTGRES_USERNAME: auditum_user
+  POSTGRES_PASSWORD: auditum_pass
+  POSTGRES_SSL_MODE: disable
+
 tasks:
   ############
   # Wrappers #
@@ -205,6 +213,14 @@ tasks:
         --file hack/local/docker-compose.yml
         --project-directory .
         down
+  local-cleanup:
+    desc: "Delete local development environment"
+    cmds:
+      - docker-compose
+        --file hack/local/docker-compose.yml
+        --project-directory .
+        down
+        --volumes
   local-migrate-up:
     desc: "Run migrations on local development environment"
     cmds:
@@ -213,12 +229,17 @@ tasks:
         -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=${POSTGRES_SSL_MODE}
         up
   local-migrate-down:
-    desc: "Reset database on local development environment"
+    desc: "Delete database data on local development environment"
     cmds:
       - PATH="${GOBIN}:${PATH}" migrate
         -path ./internal/sql/postgres/migrations/
         -database postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=${POSTGRES_SSL_MODE}
         down -all
+  local-migrate-reset:
+    desc: "Reset database migrations on local development environment"
+    cmds:
+      - task: local-migrate-down
+      - task: local-migrate-up
 
   website-start:
     dir: website
