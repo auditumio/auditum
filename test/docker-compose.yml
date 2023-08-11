@@ -14,8 +14,9 @@ services:
     networks:
       - auditum
     healthcheck:
-      test: pg_isready -U ${POSTGRES_USERNAME}
-      interval: 100ms
+      test: pg_isready -d ${POSTGRES_DATABASE:-auditum_db} -U ${POSTGRES_USERNAME:-user}
+      interval: 200ms
+      retries: 50
       timeout: 10s
 
 networks:
