@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/infragmo/auditum/internal/sql/postgres"
+	"github.com/infragmo/auditum/pkg/fragma/bunx"
 )
 
 type configuration struct {
@@ -62,6 +63,7 @@ func NewDatabase(ctx context.Context, t *testing.T) *bun.DB {
 		conf.Postgres.Password,
 		conf.Postgres.SSLMode,
 		zap.NewNop(),
+		bunx.LogQueriesDisabled, // We add hook below.
 	)
 	require.NoError(t, err)
 

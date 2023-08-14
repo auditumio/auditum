@@ -19,6 +19,7 @@ func NewDatabase(
 	sqldb *sql.DB,
 	dialect schema.Dialect,
 	log *zap.Logger,
+	logQueries LogQueriesFlag,
 ) (*bun.DB, error) {
 	db := bun.NewDB(
 		sqldb,
@@ -27,6 +28,9 @@ func NewDatabase(
 	)
 
 	db.AddQueryHook(bunotel.NewQueryHook())
+	if logQueries == LogQueriesEnabled {
+		db.AddQueryHook(zapxbun.NewLogQueryHook(log))
+	}
 
 	bun.SetLogger(zapxbun.NewLogger(log))
 
@@ -35,6 +39,21 @@ func NewDatabase(
 	}
 
 	return db, nil
+}
+
+type LogQueriesFlag int
+
+const (
+	LogQueriesDisabled LogQueriesFlag = iota
+	LogQueriesEnabled
+)
+
+func LogQueriesFlagFromBool(enabled bool) LogQueriesFlag {
+	if enabled {
+		return LogQueriesEnabled
+	}
+
+	return LogQueriesDisabled
 }
 
 func ping(ctx context.Context, db *bun.DB) error {

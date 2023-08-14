@@ -19,6 +19,7 @@ func NewDatabase(
 	ctx context.Context,
 	fpath string, // e.g. :memory: or /tmp/auditum.db
 	log *zap.Logger,
+	logQueries bunx.LogQueriesFlag,
 ) (*bun.DB, error) {
 	dsn := fmt.Sprintf("file:%s?cache=shared", fpath)
 
@@ -31,5 +32,11 @@ func NewDatabase(
 	sqldb.SetMaxIdleConns(1000)
 	sqldb.SetConnMaxLifetime(0)
 
-	return bunx.NewDatabase(ctx, sqldb, sqlitedialect.New(), log)
+	return bunx.NewDatabase(
+		ctx,
+		sqldb,
+		sqlitedialect.New(),
+		log,
+		logQueries,
+	)
 }

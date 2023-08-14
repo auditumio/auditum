@@ -74,6 +74,10 @@ store:
     # Default: "./internal/sql/sqlite/migrations".
     migrationsPath: "./internal/sql/sqlite/migrations"
 
+    # Whether to log SQL queries.
+    # Default: false.
+    logQueries: false
+
   # PostgreSQL configuration. In effect if type is postgres.
   postgres:
     # PostgreSQL database instance host.
@@ -103,6 +107,10 @@ store:
     # The path to the PostgreSQL database migrations directory.
     # Default: "./internal/sql/postgres/migrations".
     migrationsPath: "./internal/sql/postgres/migrations"
+
+    # Whether to log SQL queries.
+    # Default: false.
+    logQueries: false
 
 # Global settings.
 settings:

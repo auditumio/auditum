@@ -15,6 +15,7 @@ import (
 	"github.com/infragmo/auditum/internal/sql"
 	"github.com/infragmo/auditum/internal/sql/postgres"
 	"github.com/infragmo/auditum/internal/sql/sqlite"
+	"github.com/infragmo/auditum/pkg/fragma/bunx"
 	"github.com/infragmo/auditum/pkg/fragma/grpcx"
 	"github.com/infragmo/auditum/pkg/fragma/httpx"
 	"github.com/infragmo/auditum/pkg/fragma/otelx"
@@ -48,6 +49,7 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 			ctx,
 			conf.Store.SQLite.DatabasePath,
 			log,
+			bunx.LogQueriesFlagFromBool(conf.Store.SQLite.LogQueries),
 		)
 		if err != nil {
 			log.Error("Failed to connect to database", zap.Error(err))
@@ -78,6 +80,7 @@ func executeServer(conf *Configuration, log *zap.Logger) int {
 			conf.Store.Postgres.Password,
 			conf.Store.Postgres.SSLMode,
 			log,
+			bunx.LogQueriesFlagFromBool(conf.Store.Postgres.LogQueries),
 		)
 		if err != nil {
 			log.Error("Failed to connect to database", zap.Error(err))
