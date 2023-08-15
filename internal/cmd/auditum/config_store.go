@@ -49,6 +49,7 @@ func (c StoreConfig) Validate() error {
 type SQLiteConfig struct {
 	DatabasePath   string `yaml:"databasePath" json:"databasePath"`
 	MigrationsPath string `yaml:"migrationsPath" json:"migrationsPath"`
+	LogQueries     bool   `yaml:"logQueries" json:"logQueries"`
 }
 
 func (c SQLiteConfig) Validate() error {
@@ -66,6 +67,7 @@ type PostgresConfig struct {
 	Password       string `yaml:"password" json:"password"`
 	SSLMode        string `yaml:"sslmode" json:"sslmode"`
 	MigrationsPath string `yaml:"migrationsPath" json:"migrationsPath"`
+	LogQueries     bool   `yaml:"logQueries" json:"logQueries"`
 }
 
 func (c PostgresConfig) Validate() error {
@@ -85,6 +87,7 @@ var defaultStoreConfig = StoreConfig{
 	SQLite: SQLiteConfig{
 		DatabasePath:   ":memory:",
 		MigrationsPath: "./internal/sql/sqlite/migrations",
+		LogQueries:     false,
 	},
 	Postgres: PostgresConfig{
 		Host:           "",
@@ -94,5 +97,6 @@ var defaultStoreConfig = StoreConfig{
 		Password:       "",
 		SSLMode:        "require",
 		MigrationsPath: "./internal/sql/postgres/migrations",
+		LogQueries:     false,
 	},
 }

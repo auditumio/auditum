@@ -23,6 +23,7 @@ func NewDatabase(
 	password string,
 	sslMode string,
 	log *zap.Logger,
+	logQueries bunx.LogQueriesFlag,
 ) (*bun.DB, error) {
 	dsnWords := []string{
 		"host=" + host,
@@ -42,5 +43,11 @@ func NewDatabase(
 		return nil, fmt.Errorf("parse pgx config: %v", err)
 	}
 
-	return bunx.NewDatabase(ctx, stdlib.OpenDB(*conf), pgdialect.New(), log)
+	return bunx.NewDatabase(
+		ctx,
+		stdlib.OpenDB(*conf),
+		pgdialect.New(),
+		log,
+		logQueries,
+	)
 }

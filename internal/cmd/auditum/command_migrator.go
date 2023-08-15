@@ -7,6 +7,7 @@ import (
 
 	"github.com/infragmo/auditum/internal/sql/postgres"
 	"github.com/infragmo/auditum/internal/sql/sqlite"
+	"github.com/infragmo/auditum/pkg/fragma/bunx"
 )
 
 func executeMigrator(conf *Configuration, log *zap.Logger) (code int) {
@@ -44,6 +45,7 @@ func migrateSQLite(ctx context.Context, conf *Configuration, log *zap.Logger) in
 		ctx,
 		conf.Store.SQLite.DatabasePath,
 		log,
+		bunx.LogQueriesFlagFromBool(conf.Store.SQLite.LogQueries),
 	)
 	if err != nil {
 		log.Error("Failed to connect to database", zap.Error(err))
@@ -73,6 +75,7 @@ func migratePostgres(ctx context.Context, conf *Configuration, log *zap.Logger) 
 		conf.Store.Postgres.Password,
 		conf.Store.Postgres.SSLMode,
 		log,
+		bunx.LogQueriesFlagFromBool(conf.Store.Postgres.LogQueries),
 	)
 	if err != nil {
 		log.Error("Failed to connect to database", zap.Error(err))

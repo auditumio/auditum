@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/infragmo/auditum/internal/sql/sqlite"
+	"github.com/infragmo/auditum/pkg/fragma/bunx"
 )
 
 type configuration struct {
@@ -50,7 +51,12 @@ func NewDatabase(ctx context.Context, t *testing.T) *bun.DB {
 
 	conf := loadConfiguration(t)
 
-	db, err := sqlite.NewDatabase(ctx, conf.SQLite.Filepath, zap.NewNop())
+	db, err := sqlite.NewDatabase(
+		ctx,
+		conf.SQLite.Filepath,
+		zap.NewNop(),
+		bunx.LogQueriesDisabled, // We add hook below.
+	)
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

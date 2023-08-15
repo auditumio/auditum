@@ -12,3 +12,4 @@ store:
     username: "" # Provided via AUDITUM_store_postgres_username env var.
     password: "" # Provided via AUDITUM_store_postgres_password env var.
     sslmode: "disable"
+    logQueries: true
