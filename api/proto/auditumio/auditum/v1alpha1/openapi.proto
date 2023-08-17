@@ -12,9 +12,9 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     version: "v1alpha1"
     description:
       "This is the specification for Auditum HTTP API.\n\n"
-      "For gRPC API, see [repository](https://github.com/infragmo/auditum/tree/main/api/proto/auditumio/auditum/v1alpha1).\n\n"
+      "For gRPC API, see [repository](https://github.com/auditumio/auditum/tree/main/api/proto/auditumio/auditum/v1alpha1).\n\n"
       "For more information, see [Usage Guide](/docs/usage-guide/).\n\n"
-      "For any issues and feature requests, please use [GitHub Issue Tracker](https://github.com/infragmo/auditum/issues)"
+      "For any issues and feature requests, please use [GitHub Issue Tracker](https://github.com/auditumio/auditum/issues)"
   };
   base_path: "/api/v1alpha1";
   consumes: ["application/json"];

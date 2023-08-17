@@ -182,7 +182,7 @@ tasks:
       - go mod vendor
       - defer: rm -rf ./vendor/
       - docker build
-        --tag infragmo/auditum:{{ default "latest" .IMAGE_TAG }}
+        --tag auditumio/auditum:{{ default "latest" .IMAGE_TAG }}
         --file Dockerfile
         .
   docker-run:
@@ -194,7 +194,7 @@ tasks:
         --tty
         --publish 8080:8080
         --publish 9090:9090
-        infragmo/auditum:{{ default "latest" .IMAGE_TAG }}
+        auditumio/auditum:{{ default "latest" .IMAGE_TAG }}
 
   local-up:
     desc: "Start local development environment"

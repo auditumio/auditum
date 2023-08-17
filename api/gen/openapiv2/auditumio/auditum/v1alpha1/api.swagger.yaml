@@ -4,11 +4,11 @@ info:
   description: |-
     This is the specification for Auditum HTTP API.
 
-    For gRPC API, see [repository](https://github.com/infragmo/auditum/tree/main/api/proto/auditumio/auditum/v1alpha1).
+    For gRPC API, see [repository](https://github.com/auditumio/auditum/tree/main/api/proto/auditumio/auditum/v1alpha1).
 
     For more information, see [Usage Guide](/docs/usage-guide/).
 
-    For any issues and feature requests, please use [GitHub Issue Tracker](https://github.com/infragmo/auditum/issues)
+    For any issues and feature requests, please use [GitHub Issue Tracker](https://github.com/auditumio/auditum/issues)
   version: v1alpha1
 tags:
   - name: Projects

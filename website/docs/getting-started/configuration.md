@@ -12,7 +12,7 @@ Auditum can be configured using environment variables and a configuration file.
 
 ## Configuration File
 
-You can find the [default configuration file](https://github.com/infragmo/auditum/tree/main/config/auditum.yaml) in the repository. All configuration
+You can find the [default configuration file](https://github.com/auditumio/auditum/tree/main/config/auditum.yaml) in the repository. All configuration
 options are documented in the file. To customize the configuration, you can
 create a copy of the file and modify it as needed.
 

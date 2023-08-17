@@ -60,7 +60,7 @@ values developer experience and simplicity over complexity and feature bloat,
 and it is focused on minimizing operational overhead.
 
 Auditum is open source and free to use. It is licensed under the Apache 2.0 License.
-You can find the source code on [GitHub](https://github.com/infragmo/auditum) and
+You can find the source code on [GitHub](https://github.com/auditumio/auditum) and
 contribute to the project.
 
 ## Next Steps
