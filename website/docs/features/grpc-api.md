@@ -16,8 +16,8 @@ This page describes how to use Auditum gRPC API.
 ## Protobuf
 
 Auditum gRPC API is defined in [Protobuf](https://protobuf.dev/). The definitions
-are well-documented and available [in the same repository](https://github.com/infragmo/auditum/tree/main/api/proto/infragmo/auditum).
-The generated code is [available for Go](https://github.com/infragmo/auditum/tree/main/api/gen/go/infragmo/auditum),
+are well-documented and available [in the same repository](https://github.com/infragmo/auditum/tree/main/api/proto/auditumio/auditum).
+The generated code is [available for Go](https://github.com/infragmo/auditum/tree/main/api/gen/go/auditumio/auditum),
 and you can generate it for any other language. See the official [guide](https://protobuf.dev/getting-started/)
 for your language.
 
@@ -37,7 +37,7 @@ grpcurl \
   -plaintext \
   -d @ \
   localhost:9090 \
-  infragmo.auditum.v1alpha1.ProjectService/CreateProject \
+  auditumio.auditum.v1alpha1.ProjectService/CreateProject \
   <<EOM
 {
   "project": {
@@ -74,7 +74,7 @@ grpcurl \
   -plaintext \
   -d @ \
   localhost:9090 \
-  infragmo.auditum.v1alpha1.ProjectService/ListProjects \
+  auditumio.auditum.v1alpha1.ProjectService/ListProjects \
   <<EOM
 {}
 EOM

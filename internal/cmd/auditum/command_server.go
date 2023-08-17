@@ -8,8 +8,8 @@ import (
 	"github.com/uptrace/bun"
 	"go.uber.org/zap"
 
+	auditumv1alpha1 "github.com/infragmo/auditum/internal/api/auditumio/auditum/v1alpha1"
 	healthv1 "github.com/infragmo/auditum/internal/api/health/v1"
-	auditumv1alpha1 "github.com/infragmo/auditum/internal/api/infragmo/auditum/v1alpha1"
 	"github.com/infragmo/auditum/internal/aud"
 	"github.com/infragmo/auditum/internal/grpcgateway"
 	"github.com/infragmo/auditum/internal/sql"

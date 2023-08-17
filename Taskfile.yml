@@ -77,8 +77,8 @@ tasks:
       - PATH="${GOBIN}:${PATH}" buf generate
         --template buf.gen.yaml
       - PATH="${GOBIN}:${PATH}" buf generate
-        --template api/proto/infragmo/auditum/v1alpha1/openapi.buf.gen.yaml
-        --path api/proto/infragmo/auditum/v1alpha1
+        --template api/proto/auditumio/auditum/v1alpha1/openapi.buf.gen.yaml
+        --path api/proto/auditumio/auditum/v1alpha1
         --path api/proto/google/api
         --path api/proto/protoc-gen-openapiv2/options
   lint-go:

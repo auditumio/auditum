@@ -47,7 +47,7 @@ const sidebars = {
             {
               type: 'link',
               label: 'v1alpha1',
-              href: 'https://github.com/infragmo/auditum/tree/main/api/proto/infragmo/auditum/v1alpha1',
+              href: 'https://github.com/infragmo/auditum/tree/main/api/proto/auditumio/auditum/v1alpha1',
             }
           ]
         }
