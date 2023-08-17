@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	auditumv1alpha1 "github.com/infragmo/auditum/api/gen/go/auditumio/auditum/v1alpha1"
-	"github.com/infragmo/auditum/internal/aud"
-	"github.com/infragmo/auditum/pkg/fragma/grpcx"
+	auditumv1alpha1 "github.com/auditumio/auditum/api/gen/go/auditumio/auditum/v1alpha1"
+	"github.com/auditumio/auditum/internal/aud"
+	"github.com/auditumio/auditum/pkg/fragma/grpcx"
 )
 
 type ProjectServiceServer struct {

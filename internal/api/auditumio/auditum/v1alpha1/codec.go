@@ -5,8 +5,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	"github.com/infragmo/auditum/internal/aud"
-	"github.com/infragmo/auditum/internal/aud/types"
+	"github.com/auditumio/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud/types"
 )
 
 // Common codec functions.

@@ -6,7 +6,7 @@ import (
 
 	"github.com/uptrace/bun"
 
-	"github.com/infragmo/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 func partitionForProjectTableName(table string, ppn int32) string {

@@ -9,7 +9,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect"
 
-	"github.com/infragmo/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 type Store struct {

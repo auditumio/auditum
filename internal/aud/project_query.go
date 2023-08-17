@@ -1,6 +1,6 @@
 package aud
 
-import "github.com/infragmo/auditum/internal/aud/types"
+import "github.com/auditumio/auditum/internal/aud/types"
 
 type ProjectCursor struct {
 	LastID *ID `json:"lid,omitempty"`

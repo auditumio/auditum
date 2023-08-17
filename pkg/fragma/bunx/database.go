@@ -11,7 +11,7 @@ import (
 	"github.com/uptrace/bun/schema"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/zapx/zapxbun"
+	"github.com/auditumio/auditum/pkg/fragma/zapx/zapxbun"
 )
 
 func NewDatabase(

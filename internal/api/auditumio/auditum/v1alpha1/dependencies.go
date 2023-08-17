@@ -3,7 +3,7 @@ package auditumv1alpha1
 import (
 	"context"
 
-	"github.com/infragmo/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 type Store interface {

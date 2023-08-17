@@ -44,7 +44,7 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix(github.com/infragmo)
+      - prefix(github.com/auditumio)
   nolintlint:
     allow-unused: false
     require-explanation: true

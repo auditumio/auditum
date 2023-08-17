@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/infragmo/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 func TestDecodePageToken(t *testing.T) {

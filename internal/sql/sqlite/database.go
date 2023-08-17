@@ -10,7 +10,7 @@ import (
 	"github.com/uptrace/bun/driver/sqliteshim"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/bunx"
+	"github.com/auditumio/auditum/pkg/fragma/bunx"
 )
 
 const FilepathMemory = ":memory:"

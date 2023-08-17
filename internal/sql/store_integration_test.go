@@ -15,9 +15,9 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect"
 
-	"github.com/infragmo/auditum/internal/aud"
-	"github.com/infragmo/auditum/internal/aud/types"
-	"github.com/infragmo/auditum/internal/sql/sqltest"
+	"github.com/auditumio/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud/types"
+	"github.com/auditumio/auditum/internal/sql/sqltest"
 )
 
 func TestIntegration_Store_CreateProject(t *testing.T) {

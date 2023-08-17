@@ -3,7 +3,7 @@ package auditum
 import (
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/zapx"
+	"github.com/auditumio/auditum/pkg/fragma/zapx"
 )
 
 func Execute() int {

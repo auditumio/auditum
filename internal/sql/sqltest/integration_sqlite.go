@@ -13,8 +13,8 @@ import (
 	"github.com/uptrace/bun"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/internal/sql/sqlite"
-	"github.com/infragmo/auditum/pkg/fragma/bunx"
+	"github.com/auditumio/auditum/internal/sql/sqlite"
+	"github.com/auditumio/auditum/pkg/fragma/bunx"
 )
 
 type configuration struct {

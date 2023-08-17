@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	auditumv1alpha1 "github.com/infragmo/auditum/api/gen/go/auditumio/auditum/v1alpha1"
-	"github.com/infragmo/auditum/internal/aud"
+	auditumv1alpha1 "github.com/auditumio/auditum/api/gen/go/auditumio/auditum/v1alpha1"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 func decodeProject(src *auditumv1alpha1.Project) (dst aud.Project, err error) {

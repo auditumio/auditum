@@ -4,7 +4,7 @@ import (
 	"github.com/invopop/validation"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/zapx"
+	"github.com/auditumio/auditum/pkg/fragma/zapx"
 )
 
 type LogConfig struct {
