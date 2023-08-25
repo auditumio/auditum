@@ -5,9 +5,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/internal/sql/postgres"
-	"github.com/infragmo/auditum/internal/sql/sqlite"
-	"github.com/infragmo/auditum/pkg/fragma/bunx"
+	"github.com/auditumio/auditum/internal/sql/postgres"
+	"github.com/auditumio/auditum/internal/sql/sqlite"
+	"github.com/auditumio/auditum/pkg/fragma/bunx"
 )
 
 func executeMigrator(conf *Configuration, log *zap.Logger) (code int) {

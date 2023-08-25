@@ -11,7 +11,7 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/bunx"
+	"github.com/auditumio/auditum/pkg/fragma/bunx"
 )
 
 func NewDatabase(

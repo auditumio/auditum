@@ -18,7 +18,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'infragmo', // Usually your GitHub org/user name.
+  organizationName: 'auditumio', // Usually your GitHub org/user name.
   projectName: 'auditum', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -42,14 +42,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/infragmo/auditum/tree/main/website/',
+            'https://github.com/auditumio/auditum/tree/main/website/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-              'https://github.com/infragmo/auditum/tree/main/website/',
+              'https://github.com/auditumio/auditum/tree/main/website/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -97,7 +97,7 @@ const config = {
       announcementBar: {
         id: 'announcementBar-1', // Increment on change
         content:
-          '⭐️ Auditum just launched, and we would appreciate if you spread the word! Give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/infragmo/auditum">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/auditumio">Twitter</a>',
+          '⭐️ Auditum just launched, and we would appreciate if you spread the word! Give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/auditumio/auditum">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/auditumio">Twitter</a>',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: true,
@@ -126,7 +126,7 @@ const config = {
             position: 'left',
           },
           {
-            href: 'https://github.com/infragmo/auditum',
+            href: 'https://github.com/auditumio/auditum',
             label: 'GitHub',
             position: 'right',
           },
@@ -182,7 +182,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/infragmo/auditum',
+                href: 'https://github.com/auditumio/auditum',
               },
               {
                 label: 'Twitter',

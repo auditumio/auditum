@@ -11,7 +11,7 @@ import (
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 
-	"github.com/infragmo/auditum/internal/aud"
+	"github.com/auditumio/auditum/internal/aud"
 )
 
 const (

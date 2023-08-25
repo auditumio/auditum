@@ -6,7 +6,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"go.uber.org/zap"
 
-	"github.com/infragmo/auditum/pkg/fragma/zapx/zapxmigrate"
+	"github.com/auditumio/auditum/pkg/fragma/zapx/zapxmigrate"
 )
 
 func RunMigrations(mig *migrate.Migrate, log any) error {

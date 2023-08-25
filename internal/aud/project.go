@@ -3,7 +3,7 @@ package aud
 import (
 	"time"
 
-	"github.com/infragmo/auditum/internal/aud/types"
+	"github.com/auditumio/auditum/internal/aud/types"
 )
 
 type Project struct {

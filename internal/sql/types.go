@@ -3,7 +3,7 @@ package sql
 import (
 	"database/sql"
 
-	"github.com/infragmo/auditum/internal/aud/types"
+	"github.com/auditumio/auditum/internal/aud/types"
 )
 
 func toBoolValueModel(src types.BoolValue) sql.NullBool {

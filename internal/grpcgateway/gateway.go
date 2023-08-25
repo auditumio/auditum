@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/infragmo/auditum/pkg/fragma/grpcx"
+	"github.com/auditumio/auditum/pkg/fragma/grpcx"
 )
 
 // RegistrableService describes a service implementation that can be registered

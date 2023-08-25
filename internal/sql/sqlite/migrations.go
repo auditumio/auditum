@@ -8,7 +8,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file" // init driver for fs
 	"github.com/uptrace/bun"
 
-	"github.com/infragmo/auditum/pkg/fragma/bunx"
+	"github.com/auditumio/auditum/pkg/fragma/bunx"
 )
 
 func RunMigrations(db *bun.DB, fpath string, migrationsDir string, log any) error {

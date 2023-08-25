@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/infragmo/auditum/pkg/fragma/grpcx"
+	"github.com/auditumio/auditum/pkg/fragma/grpcx"
 )
 
 func TestGetPageSize(t *testing.T) {

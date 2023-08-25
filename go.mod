@@ -1,4 +1,4 @@
-module github.com/infragmo/auditum
+module github.com/auditumio/auditum
 
 go 1.20
 

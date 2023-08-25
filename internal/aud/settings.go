@@ -3,7 +3,7 @@ package aud
 import (
 	"github.com/invopop/validation"
 
-	"github.com/infragmo/auditum/internal/util/validate"
+	"github.com/auditumio/auditum/internal/util/validate"
 )
 
 type Settings struct {

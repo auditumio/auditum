@@ -18,11 +18,11 @@ The simplest way to install all required tools is to use [asdf](https://asdf-vm.
 asdf install
 ```
 
-See [`.tool-versions`](https://github.com/infragmo/auditum/tree/main/.tool-versions) for currently pinned versions.
+See [`.tool-versions`](https://github.com/auditumio/auditum/tree/main/.tool-versions) for currently pinned versions.
 
 ## Building and testing
 
-Refer to [Taskfile](https://github.com/infragmo/auditum/tree/main/Taskfile.yml) for available commands to work with the project.
+Refer to [Taskfile](https://github.com/auditumio/auditum/tree/main/Taskfile.yml) for available commands to work with the project.
 
 ## Integrations
 

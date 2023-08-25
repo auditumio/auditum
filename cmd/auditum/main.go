@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/infragmo/auditum/internal/cmd/auditum"
+	"github.com/auditumio/auditum/internal/cmd/auditum"
 )
 
 func main() {
