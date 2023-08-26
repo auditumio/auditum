@@ -3,10 +3,13 @@
 version: "3"
 
 vars:
+  # Dependencies.
   PROTOC_GEN_GO_VERSION: v1.30.0
   PROTOC_GEN_GO_GRPC_VERSION: v1.3.0
   PROTOC_GEN_GRPC_GATEWAY_VERSION: v2.16.0
   MIGRATE_VERSION: v4.15.2
+  # Project vars.
+  IMAGE_NAME: auditumio/auditum
 
 env:
   GOBIN: "{{ .ROOT_DIR }}/bin"
@@ -182,7 +185,7 @@ tasks:
       - go mod vendor
       - defer: rm -rf ./vendor/
       - docker build
-        --tag auditumio/auditum:{{ default "latest" .IMAGE_TAG }}
+        --tag {{ .IMAGE_NAME }}:{{ default "latest" .IMAGE_TAG }}
         --file Dockerfile
         .
   docker-run:
@@ -194,7 +197,7 @@ tasks:
         --tty
         --publish 8080:8080
         --publish 9090:9090
-        auditumio/auditum:{{ default "latest" .IMAGE_TAG }}
+        {{ .IMAGE_NAME }}:{{ default "latest" .IMAGE_TAG }}
 
   local-up:
     desc: "Start local development environment"
