@@ -27,7 +27,7 @@ require (
 	github.com/uptrace/bun/driver/sqliteshim v1.1.14
 	github.com/uptrace/bun/extra/bunotel v1.1.14
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.43.0
 	go.opentelemetry.io/otel v1.17.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.16.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.16.0
