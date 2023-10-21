@@ -21,9 +21,9 @@ require (
 	github.com/ryboe/q v1.0.20
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	github.com/uptrace/bun v1.1.14
+	github.com/uptrace/bun v1.1.16
 	github.com/uptrace/bun/dialect/pgdialect v1.1.14
-	github.com/uptrace/bun/dialect/sqlitedialect v1.1.14
+	github.com/uptrace/bun/dialect/sqlitedialect v1.1.16
 	github.com/uptrace/bun/driver/sqliteshim v1.1.14
 	github.com/uptrace/bun/extra/bunotel v1.1.14
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
