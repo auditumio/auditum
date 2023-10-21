@@ -10,6 +10,10 @@ updates:
     ignore:
       - dependency-name: go.opentelemetry.io/otel*
       - dependency-name: go.opentelemetry.io/contrib*
+    groups:
+      bun:
+        patterns:
+          - github.com/uptrace/bun*
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
