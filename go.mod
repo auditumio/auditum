@@ -8,7 +8,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.17.1
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/invopop/validation v0.3.0
 	github.com/jackc/pgx/v5 v5.5.0
