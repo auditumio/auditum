@@ -1,4 +1,4 @@
-buf 1.21.0
+buf 1.28.0
 golangci-lint 1.55.2
 golang 1.21.4
 nodejs 18.16.0
