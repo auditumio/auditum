@@ -54,3 +54,7 @@ issues:
     - path: _test.go
       linters:
         - goconst
+    # Jaeger exporter is deprecated but we still keep it for a while.
+    - linters:
+        - staticcheck
+      text: "^SA1019: \"go.opentelemetry.io/otel/exporters/jaeger\""

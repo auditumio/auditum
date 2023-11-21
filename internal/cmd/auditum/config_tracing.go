@@ -24,6 +24,7 @@ import (
 const (
 	tracingExporterLog    = "log"
 	tracingExporterJaeger = "jaeger"
+	tracingExporterOTLP   = "otlp"
 )
 
 type TracingConfig struct {
@@ -31,6 +32,7 @@ type TracingConfig struct {
 	Exporter string                      `yaml:"exporter" json:"exporter"`
 	Log      TracingLogExporterConfig    `yaml:"stdout" json:"stdout"`
 	Jaeger   TracingJaegerExporterConfig `yaml:"jaeger" json:"jaeger"`
+	OTLP     TracingOTLPExporterConfig   `yaml:"otlp" json:"otlp"`
 }
 
 func (c TracingConfig) Validate() error {
@@ -38,7 +40,11 @@ func (c TracingConfig) Validate() error {
 		validation.Field(
 			&c.Exporter,
 			validation.Required,
-			validation.In(tracingExporterLog, tracingExporterJaeger),
+			validation.In(
+				tracingExporterLog,
+				tracingExporterJaeger,
+				tracingExporterOTLP,
+			),
 		),
 	)
 	if err != nil {
@@ -52,6 +58,11 @@ func (c TracingConfig) Validate() error {
 	case tracingExporterJaeger:
 		if err := c.Jaeger.Validate(); err != nil {
 			return fmt.Errorf("invalid 'jaeger': %v", err)
+		}
+		return nil
+	case tracingExporterOTLP:
+		if err := c.OTLP.Validate(); err != nil {
+			return fmt.Errorf("invalid 'otlp': %v", err)
 		}
 		return nil
 	default:
@@ -73,6 +84,23 @@ func (c TracingJaegerExporterConfig) Validate() error {
 	)
 }
 
+type TracingOTLPExporterConfig struct {
+	Endpoint string `yaml:"endpoint" json:"endpoint"`
+}
+
+func (c TracingOTLPExporterConfig) Validate() error {
+	return validation.ValidateStruct(&c,
+		validation.Field(
+			&c.Endpoint,
+			validation.Required,
+			// is.URL does not work: under the hood govalidator.IsURL is used
+			// which has regex which permits only a few schemes, and does not
+			// include grpc.
+			is.RequestURL,
+		),
+	)
+}
+
 var defaultTracingConfig = TracingConfig{
 	Enabled:  false,
 	Exporter: tracingExporterLog,
@@ -81,5 +109,8 @@ var defaultTracingConfig = TracingConfig{
 	},
 	Jaeger: TracingJaegerExporterConfig{
 		Endpoint: "http://localhost:14268/api/traces",
+	},
+	OTLP: TracingOTLPExporterConfig{
+		Endpoint: "http://localhost:4318",
 	},
 }

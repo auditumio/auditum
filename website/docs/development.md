@@ -32,7 +32,8 @@ To develop tracing integration, you can deploy Jaeger locally using Docker.
 
 We need the following ports:
 
-- `14268` for collector
+- `4317` for gRPC OTLP collector
+- `4318` for HTTP OTLP collector
 - `16686` for UI
 
 This command starts Jaeger using in-memory storage:
@@ -41,9 +42,24 @@ This command starts Jaeger using in-memory storage:
 docker run \
   --name jaeger \
   --rm \
-  -p 14268:14268 \
+  -e COLLECTOR_OTLP_ENABLED=true \
+  -p 4317:4317 \
+  -p 4318:4318 \
   -p 16686:16686 \
-  jaegertracing/all-in-one:1.46
+  jaegertracing/all-in-one:1.49
 ```
 
-For more options, see reference: https://www.jaegertracing.io/docs/1.46/deployment
+For more options, see reference: https://www.jaegertracing.io/docs/1.49/deployment
+
+Example Auditum configuration part to send traces to Jaeger via gRPC OTLP port:
+
+```yaml
+tracing:
+  enabled: true
+  exporter: otlp
+  otlp:
+    endpoint: "grpc://localhost:4317"
+```
+
+Make a few requests to Auditum API and then navigate to http://localhost:16686
+to see traces in Jaeger UI.

@@ -28,7 +28,8 @@ tracing:
   enabled: false
 
   # Where to export traces/spans.
-  # Supported values: log, jaeger.
+  # Supported values: log, jaeger, otlp.
+  # NOTE: jaeger exporter is deprecated and will be removed, use otlp instead.
   # Default: log.
   exporter: log
 
@@ -39,10 +40,27 @@ tracing:
     pretty: false
 
   # Jaeger exporter configuration. In effect if exporter is jaeger.
+  # NOTE: jaeger exporter is deprecated and will be removed, use otlp instead.
   jaeger:
     # The Jaeger endpoint.
     # Default: http://localhost:14268/api/traces.
     endpoint: "http://localhost:14268/api/traces"
+
+  # OpenTelemetry Collector exporter configuration. In effect if exporter is
+  # otlp.
+  otlp:
+    # The OpenTelemetry Collector endpoint.
+    #
+    # HTTP or gRPC endpoints may be used, e.g. Jaeger exposes ports for both.
+    #
+    # The scheme determines whether TLS is used:
+    # - http://localhost:4318 - use HTTP at 4317 port;
+    # - https://localhost:4318 - use HTTPS at 4317 port;
+    # - grpc://localhost:4317 - use GRPC without TLS at 4317 port;
+    # - grpcs://localhost:4317 - use GRPC with TLS at 4317 port.
+    #
+    # Default: "http://localhost:4318".
+    endpoint: "http://localhost:4318"
 
 # Configuration for HTTP server.
 http:

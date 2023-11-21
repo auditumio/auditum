@@ -6,9 +6,9 @@ log:
 
 tracing:
   enabled: true
-  exporter: jaeger
-  jaeger:
-    endpoint: "http://localhost:14268/api/traces"
+  exporter: otlp
+  otlp:
+    endpoint: "grpc://localhost:4317"
 
 store:
   type: sqlite

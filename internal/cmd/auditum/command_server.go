@@ -257,6 +257,8 @@ func initTracing(conf TracingConfig, log *zap.Logger) (*otelx.Provider, error) {
 		opts = append(opts, otelx.ProviderWithLogExporter(conf.Log.Pretty))
 	case tracingExporterJaeger:
 		opts = append(opts, otelx.ProviderWithJaegerExporter(conf.Jaeger.Endpoint))
+	case tracingExporterOTLP:
+		opts = append(opts, otelx.ProviderWithOTLPExporter(conf.OTLP.Endpoint))
 	}
 
 	return otelx.NewProvider(opts...)
