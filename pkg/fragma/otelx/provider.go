@@ -17,12 +17,16 @@ package otelx
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
+	"path"
 	"time"
 
 	"github.com/hashicorp/go-cleanhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -96,6 +100,17 @@ func ProviderWithJaegerExporter(endpoint string) ProviderOption {
 	}
 }
 
+func ProviderWithOTLPExporter(endpoint string) ProviderOption {
+	return func(options *providerOptions) error {
+		exporter, err := setupOTLPExporter(endpoint)
+		if err != nil {
+			return err
+		}
+		options.exporter = exporter
+		return nil
+	}
+}
+
 func (p *Provider) Close(ctx context.Context) error {
 	const timeout = 10 * time.Second
 	ctx, cancel := context.WithTimeout(ctx, timeout)
@@ -136,4 +151,44 @@ func setupJaegerExporter(endpoint string) (sdktrace.SpanExporter, error) {
 			jaeger.WithHTTPClient(cleanhttp.DefaultPooledClient()),
 		),
 	)
+}
+
+func setupOTLPExporter(endpoint string) (sdktrace.SpanExporter, error) {
+	// We most probably don't need a real context here, since http implementation
+	// does nothing on Start, and grpc performs connection in a non-blocking way.
+	ctx := context.TODO()
+
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("parse endpoint as URL: %v", err)
+	}
+
+	ep := path.Join(u.Host, u.Path)
+
+	switch u.Scheme {
+	case "grpc":
+		return otlptracegrpc.New(
+			ctx,
+			otlptracegrpc.WithEndpoint(ep),
+			otlptracegrpc.WithInsecure(),
+		)
+	case "grpcs":
+		return otlptracegrpc.New(
+			ctx,
+			otlptracegrpc.WithEndpoint(ep),
+		)
+	case "http":
+		return otlptracehttp.New(
+			ctx,
+			otlptracehttp.WithEndpoint(ep),
+			otlptracehttp.WithInsecure(),
+		)
+	case "https":
+		return otlptracehttp.New(
+			ctx,
+			otlptracehttp.WithEndpoint(ep),
+		)
+	default:
+		return nil, fmt.Errorf("unknown protocol: %s", u.Scheme)
+	}
 }
