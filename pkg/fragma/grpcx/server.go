@@ -18,7 +18,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.uber.org/zap"
@@ -31,15 +31,22 @@ import (
 
 func NewServer(log *zap.Logger) *grpc.Server {
 	panicRecoveryHandler := newPanicRecoveryHandler(log.Named("grpc_panic_handler"))
+	panicRecoveryInterceptor := recovery.UnaryServerInterceptor(
+		recovery.WithRecoveryHandler(panicRecoveryHandler),
+	)
+
+	// NOTE: two interceptors is not a mistake. The last one should catch RPC
+	// panics, so interceptors can build based on it, e.g. finish call logging.
+	// The first one should catch all other panics, i.e. it is a guard for
+	// other interceptor panics.
 
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			grpc_recovery.UnaryServerInterceptor(
-				grpc_recovery.WithRecoveryHandler(panicRecoveryHandler),
-			),
+			panicRecoveryInterceptor,
+			LoggingUnaryServerInterceptor(log),
 			otelgrpc.UnaryServerInterceptor(),
 			grpc_prometheus.UnaryServerInterceptor,
-			LoggingUnaryServerInterceptor(log),
+			panicRecoveryInterceptor,
 		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle:     5 * time.Minute,
@@ -60,8 +67,8 @@ func InitPrometheusMetrics(server *grpc.Server) {
 	grpc_prometheus.Register(server)
 }
 
-func newPanicRecoveryHandler(log *zap.Logger) func(p interface{}) error {
-	return func(p interface{}) error {
+func newPanicRecoveryHandler(log *zap.Logger) func(p any) error {
+	return func(p any) error {
 		log.Error("Recover from panic",
 			zap.Any("panic", p),
 			zap.String("stack", string(debug.Stack())),
