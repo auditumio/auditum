@@ -10,6 +10,7 @@ updates:
     ignore:
       - dependency-name: go.opentelemetry.io/otel*
       - dependency-name: go.opentelemetry.io/contrib*
+      - dependency-name: github.com/golang-migrate/migrate*
     groups:
       bun:
         patterns:

@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/gofrs/uuid/v5 v5.0.0
-	github.com/golang-migrate/migrate/v4 v4.16.2
+	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
@@ -53,7 +53,7 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -64,7 +64,7 @@ require (
 	github.com/knadh/koanf/maps v0.1.1 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/lib/pq v1.10.2 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
@@ -88,8 +88,8 @@ require (
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sync v0.4.0 // indirect
+	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
