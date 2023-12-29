@@ -1,19 +1,23 @@
 ARG GOLANG_VERSION="1.21"
 ARG ALPINE_VERSION="3.18"
 
-FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION}
+FROM --platform=$BUILDPLATFORM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION}
+
+ARG TARGETARCH
+
+ENV GOARCH=${TARGETARCH} \
+    CGO_ENABLED=0
 
 WORKDIR /opt/auditumio/auditum
 
 COPY . .
 
-RUN CGO_ENABLED=0 \
-  go build \
+RUN go build \
   -trimpath \
   -mod=vendor \
   -o ./bin/auditum ./cmd/auditum
 
-FROM alpine:${ALPINE_VERSION}
+FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION}
 
 RUN apk add --no-cache ca-certificates tzdata
 

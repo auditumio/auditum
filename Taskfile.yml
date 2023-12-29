@@ -187,6 +187,7 @@ tasks:
       - docker build
         --tag {{ .IMAGE_NAME }}:{{ default "latest" .IMAGE_TAG }}
         --file Dockerfile
+        --load
         .
   docker-run:
     desc: "Run docker image"
