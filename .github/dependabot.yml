@@ -11,6 +11,9 @@ updates:
       - dependency-name: go.opentelemetry.io/otel*
       - dependency-name: go.opentelemetry.io/contrib*
       - dependency-name: github.com/golang-migrate/migrate*
+      # Keep synced with protobuf plugins (see Taskfile.yml).
+      - dependency-name: github.com/grpc-ecosystem/grpc-gateway*
+      - dependency-name: google.golang.org/protobuf*
     groups:
       bun:
         patterns:
