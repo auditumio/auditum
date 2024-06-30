@@ -50,9 +50,6 @@ jobs:
         with:
           version: v1.55.2
           args: --verbose
-          # See: https://github.com/golangci/golangci-lint-action/issues/244
-          skip-pkg-cache: true
-          skip-build-cache: true
 
       - name: Build
         run: |
