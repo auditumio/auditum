@@ -46,7 +46,7 @@ jobs:
           go test -v -race -coverprofile=coverage.txt -covermode=atomic $(go list ./...)
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@3cfe3a4abbb849e10058ce4af15d205b6da42804 # v4.0.0
+        uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64 # v6.0.1
         with:
           version: v1.55.2
           args: --verbose
