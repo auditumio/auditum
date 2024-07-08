@@ -54,7 +54,12 @@ issues:
     - path: _test.go
       linters:
         - goconst
-    # Jaeger exporter is deprecated but we still keep it for a while.
+    # Jaeger exporter is deprecated, but we still keep it for a while.
     - linters:
         - staticcheck
       text: "^SA1019: \"go.opentelemetry.io/otel/exporters/jaeger\""
+    # grpc.DialContext is deprecated, but we still keep it for a while.
+    # Later we should replace with grpc.NewClient.
+    - linters:
+        - staticcheck
+      text: "^SA1019: grpc.DialContext is deprecated"

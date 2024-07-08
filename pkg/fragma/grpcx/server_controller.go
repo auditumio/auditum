@@ -199,7 +199,6 @@ func (sm *ServerController) dial(ctx context.Context) (*grpc.ClientConn, error) 
 		conn, err := grpc.DialContext(
 			ctx,
 			sm.dialAddr(),
-			grpc.WithBlock(),
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		)
 
