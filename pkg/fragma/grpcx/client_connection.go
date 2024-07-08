@@ -27,7 +27,6 @@ import (
 // NewClientConnection establishes new gRPC client connection and returns it.
 func NewClientConnection(addr string, opts ...grpc.DialOption) (*grpc.ClientConn, error) {
 	defaultOpts := []grpc.DialOption{
-		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
 		grpc.WithChainUnaryInterceptor(
