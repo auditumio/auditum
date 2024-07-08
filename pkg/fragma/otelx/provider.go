@@ -33,6 +33,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 )
 
 type Provider struct {
@@ -125,7 +126,7 @@ func (p *Provider) Close(ctx context.Context) error {
 
 func NoopProvider() *Provider {
 	return &Provider{
-		tracerProvider: trace.NewNoopTracerProvider(),
+		tracerProvider: noop.NewTracerProvider(),
 	}
 }
 
