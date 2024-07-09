@@ -41,10 +41,10 @@ func NewServer(log *zap.Logger) *grpc.Server {
 	// other interceptor panics.
 
 	server := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			panicRecoveryInterceptor,
 			LoggingUnaryServerInterceptor(log),
-			otelgrpc.UnaryServerInterceptor(),
 			grpc_prometheus.UnaryServerInterceptor,
 			panicRecoveryInterceptor,
 		),

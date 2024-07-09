@@ -29,9 +29,7 @@ func NewClientConnection(addr string, opts ...grpc.DialOption) (*grpc.ClientConn
 	defaultOpts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
-		grpc.WithChainUnaryInterceptor(
-			otelgrpc.UnaryClientInterceptor(),
-		),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 	}
 
 	opts = append(defaultOpts, opts...)
