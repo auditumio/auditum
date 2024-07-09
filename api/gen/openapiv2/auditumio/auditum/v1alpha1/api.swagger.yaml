@@ -134,49 +134,7 @@ paths:
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              project:
-                type: object
-                properties:
-                  create_time:
-                    type: string
-                    format: date-time
-                    description: Time when the project was created.
-                    readOnly: true
-                  display_name:
-                    type: string
-                    description: |-
-                      Display name of the project.
-
-                      REQUIREMENTS.
-                      The value must be 3-64 characters long.
-                  update_record_enabled:
-                    type: boolean
-                    description: |-
-                      Whether to allow updating records for this project.
-                      If set, overrides the global setting.
-                      Defaults to unset.
-                  delete_record_enabled:
-                    type: boolean
-                    description: |-
-                      Whether to allow deleting records for this project.
-                      If set, overrides the global setting.
-                      Defaults to unset.
-                description: Project to update.
-                title: Project to update.
-              update_mask:
-                type: string
-                description: |-
-                  Field mask indicating a list of fields to update.
-                  Currently supported fields:
-                  - `display_name`
-                  - `update_record_enabled`
-                  - `delete_record_enabled`
-                  Support for other fields may be added in the future.
-            required:
-              - display_name
-              - update_mask
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.ProjectService.UpdateProjectBody'
       tags:
         - Projects
   /projects/{project_id}/records:
@@ -294,64 +252,7 @@ paths:
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              record:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: Internal record identifier.
-                    readOnly: true
-                  create_time:
-                    type: string
-                    format: date-time
-                    description: Time when the record was created.
-                    readOnly: true
-                  labels:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    description: |-
-                      Labels for the record that can be used for filtering.
-                      The labels are indexed, unlike metadata fields, which means it is possible
-                      to find records by their labels.
-
-                      REQUIREMENTS.
-                      Mandatory:
-                      Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
-                      Keys must be at least 1 byte in length.
-                      Configurable defaults:
-                      Keys must be at most 64 bytes in length.
-                      Values must be at most 256 bytes in length.
-                      The total size of all keys and values must be at most 2048 bytes.
-
-                      EXAMPLE.
-                      In an example social website domain, records for both POST and COMMENT
-                      resources can be created with "post_id" label. This way all records related to the
-                      post and its comments can be retrieved in chronological order with one
-                      request by filtering with "post_id" label.
-
-                      BEST PRACTICE.
-                      - Add only labels that are critical for chronological retrieval of
-                        records related to multiple resources.
-                      - Do not add labels for standard fields (such as resource type) as they
-                        are already available for filtering.
-                  resource:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Resource'
-                    description: Record resource.
-                  operation:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Operation'
-                    description: Record operation.
-                  actor:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Actor'
-                    description: Record actor.
-                description: Record to create.
-                title: Record to create.
-            required:
-              - resource
-              - operation
-              - actor
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.RecordService.CreateRecordBody'
       tags:
         - Records
   /projects/{project_id}/records/{record_id}:
@@ -444,71 +345,7 @@ paths:
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              record:
-                type: object
-                properties:
-                  create_time:
-                    type: string
-                    format: date-time
-                    description: Time when the record was created.
-                    readOnly: true
-                  labels:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    description: |-
-                      Labels for the record that can be used for filtering.
-                      The labels are indexed, unlike metadata fields, which means it is possible
-                      to find records by their labels.
-
-                      REQUIREMENTS.
-                      Mandatory:
-                      Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
-                      Keys must be at least 1 byte in length.
-                      Configurable defaults:
-                      Keys must be at most 64 bytes in length.
-                      Values must be at most 256 bytes in length.
-                      The total size of all keys and values must be at most 2048 bytes.
-
-                      EXAMPLE.
-                      In an example social website domain, records for both POST and COMMENT
-                      resources can be created with "post_id" label. This way all records related to the
-                      post and its comments can be retrieved in chronological order with one
-                      request by filtering with "post_id" label.
-
-                      BEST PRACTICE.
-                      - Add only labels that are critical for chronological retrieval of
-                        records related to multiple resources.
-                      - Do not add labels for standard fields (such as resource type) as they
-                        are already available for filtering.
-                  resource:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Resource'
-                    description: Record resource.
-                  operation:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Operation'
-                    description: Record operation.
-                  actor:
-                    $ref: '#/definitions/auditumio.auditum.v1alpha1.Actor'
-                    description: Record actor.
-                description: Record to update.
-                title: Record to update.
-              update_mask:
-                type: string
-                description: |-
-                  Field mask indicating a list of fields to update.
-                  Currently supported fields:
-                  - `labels`
-                  - `resource`
-                  - `operation`
-                  - `actor`
-                  Support for other fields may be added in the future.
-            required:
-              - resource
-              - operation
-              - actor
-              - update_mask
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.RecordService.UpdateRecordBody'
       tags:
         - Records
       externalDocs:
@@ -538,19 +375,7 @@ paths:
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              records:
-                type: array
-                items:
-                  type: object
-                  $ref: '#/definitions/auditumio.auditum.v1alpha1.Record'
-                description: |-
-                  Records to create.
-                  Maximum number of records in a batch is 100.
-                maxItems: 100
-            required:
-              - records
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.RecordService.BatchCreateRecordsBody'
       tags:
         - Records
 definitions:
@@ -857,6 +682,50 @@ definitions:
     description: Represents a project.
     required:
       - display_name
+  auditumio.auditum.v1alpha1.ProjectService.UpdateProjectBody:
+    type: object
+    properties:
+      project:
+        type: object
+        properties:
+          create_time:
+            type: string
+            format: date-time
+            description: Time when the project was created.
+            readOnly: true
+          display_name:
+            type: string
+            description: |-
+              Display name of the project.
+
+              REQUIREMENTS.
+              The value must be 3-64 characters long.
+          update_record_enabled:
+            type: boolean
+            description: |-
+              Whether to allow updating records for this project.
+              If set, overrides the global setting.
+              Defaults to unset.
+          delete_record_enabled:
+            type: boolean
+            description: |-
+              Whether to allow deleting records for this project.
+              If set, overrides the global setting.
+              Defaults to unset.
+        description: Project to update.
+        title: Project to update.
+      update_mask:
+        type: string
+        description: |-
+          Field mask indicating a list of fields to update.
+          Currently supported fields:
+          - `display_name`
+          - `update_record_enabled`
+          - `delete_record_enabled`
+          Support for other fields may be added in the future.
+    required:
+      - display_name
+      - update_mask
   auditumio.auditum.v1alpha1.Record:
     type: object
     properties:
@@ -916,6 +785,145 @@ definitions:
       - resource
       - operation
       - actor
+  auditumio.auditum.v1alpha1.RecordService.BatchCreateRecordsBody:
+    type: object
+    properties:
+      records:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/auditumio.auditum.v1alpha1.Record'
+        description: |-
+          Records to create.
+          Maximum number of records in a batch is 100.
+        maxItems: 100
+    required:
+      - records
+  auditumio.auditum.v1alpha1.RecordService.CreateRecordBody:
+    type: object
+    properties:
+      record:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Internal record identifier.
+            readOnly: true
+          create_time:
+            type: string
+            format: date-time
+            description: Time when the record was created.
+            readOnly: true
+          labels:
+            type: object
+            additionalProperties:
+              type: string
+            description: |-
+              Labels for the record that can be used for filtering.
+              The labels are indexed, unlike metadata fields, which means it is possible
+              to find records by their labels.
+
+              REQUIREMENTS.
+              Mandatory:
+              Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+              Keys must be at least 1 byte in length.
+              Configurable defaults:
+              Keys must be at most 64 bytes in length.
+              Values must be at most 256 bytes in length.
+              The total size of all keys and values must be at most 2048 bytes.
+
+              EXAMPLE.
+              In an example social website domain, records for both POST and COMMENT
+              resources can be created with "post_id" label. This way all records related to the
+              post and its comments can be retrieved in chronological order with one
+              request by filtering with "post_id" label.
+
+              BEST PRACTICE.
+              - Add only labels that are critical for chronological retrieval of
+                records related to multiple resources.
+              - Do not add labels for standard fields (such as resource type) as they
+                are already available for filtering.
+          resource:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Resource'
+            description: Record resource.
+          operation:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Operation'
+            description: Record operation.
+          actor:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Actor'
+            description: Record actor.
+        description: Record to create.
+        title: Record to create.
+    required:
+      - resource
+      - operation
+      - actor
+  auditumio.auditum.v1alpha1.RecordService.UpdateRecordBody:
+    type: object
+    properties:
+      record:
+        type: object
+        properties:
+          create_time:
+            type: string
+            format: date-time
+            description: Time when the record was created.
+            readOnly: true
+          labels:
+            type: object
+            additionalProperties:
+              type: string
+            description: |-
+              Labels for the record that can be used for filtering.
+              The labels are indexed, unlike metadata fields, which means it is possible
+              to find records by their labels.
+
+              REQUIREMENTS.
+              Mandatory:
+              Keys must conform to the following regexp: [a-zA-Z0-9-_]+.
+              Keys must be at least 1 byte in length.
+              Configurable defaults:
+              Keys must be at most 64 bytes in length.
+              Values must be at most 256 bytes in length.
+              The total size of all keys and values must be at most 2048 bytes.
+
+              EXAMPLE.
+              In an example social website domain, records for both POST and COMMENT
+              resources can be created with "post_id" label. This way all records related to the
+              post and its comments can be retrieved in chronological order with one
+              request by filtering with "post_id" label.
+
+              BEST PRACTICE.
+              - Add only labels that are critical for chronological retrieval of
+                records related to multiple resources.
+              - Do not add labels for standard fields (such as resource type) as they
+                are already available for filtering.
+          resource:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Resource'
+            description: Record resource.
+          operation:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Operation'
+            description: Record operation.
+          actor:
+            $ref: '#/definitions/auditumio.auditum.v1alpha1.Actor'
+            description: Record actor.
+        description: Record to update.
+        title: Record to update.
+      update_mask:
+        type: string
+        description: |-
+          Field mask indicating a list of fields to update.
+          Currently supported fields:
+          - `labels`
+          - `resource`
+          - `operation`
+          - `actor`
+          Support for other fields may be added in the future.
+    required:
+      - resource
+      - operation
+      - actor
+      - update_mask
   auditumio.auditum.v1alpha1.Resource:
     type: object
     properties:
