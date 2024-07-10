@@ -21,4 +21,5 @@ var (
 	ErrRecordNotFound  = errors.New("record not found")
 
 	ErrDisabled = errors.New("disabled")
+	ErrConflict = errors.New("conflict")
 )

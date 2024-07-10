@@ -35,17 +35,31 @@ func decodeProject(src *auditumv1alpha1.Project) (dst aud.Project, err error) {
 		return dst, fmt.Errorf(`invalid "display_name": %v`, err)
 	}
 
+	externalID, err := decodeExternalID(src.GetExternalId())
+	if err != nil {
+		return dst, fmt.Errorf(`invalid "external_id": %v`, err)
+	}
+
 	return aud.Project{
 		ID:                  id,
 		CreateTime:          time.Time{}, // Ignored as OUTPUT_ONLY.
 		DisplayName:         displayName,
 		UpdateRecordEnabled: decodeBoolValue(src.GetUpdateRecordEnabled()),
 		DeleteRecordEnabled: decodeBoolValue(src.GetDeleteRecordEnabled()),
+		ExternalID:          externalID,
 	}, nil
 }
 
 func decodeProjectDisplayName(src string) (string, error) {
 	if err := validateProjectDisplayName(src); err != nil {
+		return "", err
+	}
+
+	return src, nil
+}
+
+func decodeExternalID(src string) (string, error) {
+	if err := validateProjectExternalID(src); err != nil {
 		return "", err
 	}
 
@@ -59,6 +73,7 @@ func encodeProject(src aud.Project) *auditumv1alpha1.Project {
 		DisplayName:         src.DisplayName,
 		UpdateRecordEnabled: encodeBoolValue(src.UpdateRecordEnabled),
 		DeleteRecordEnabled: encodeBoolValue(src.DeleteRecordEnabled),
+		ExternalId:          encodeOptionalString(src.ExternalID),
 	}
 }
 
@@ -68,4 +83,10 @@ func encodeProjects(src []aud.Project) []*auditumv1alpha1.Project {
 		dst[i] = encodeProject(src[i])
 	}
 	return dst
+}
+
+func decodeProjectFilter(src *auditumv1alpha1.ListProjectsRequest_Filter) (dst aud.ProjectFilter) {
+	return aud.ProjectFilter{
+		ExternalIDs: src.GetExternalIds(),
+	}
 }

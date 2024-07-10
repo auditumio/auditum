@@ -38,12 +38,17 @@ func (s *Store) CreateProject(ctx context.Context, project aud.Project) error {
 	model := toProjectModel(project)
 
 	err := s.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		_, err := tx.NewInsert().
+		result, err := tx.NewInsert().
 			Model(&model).
+			On("CONFLICT (external_id) DO NOTHING").
 			Returning("partition_number").
 			Exec(ctx)
 		if err != nil {
 			return fmt.Errorf("insert project into db: %v", err)
+		}
+
+		if n, _ := result.RowsAffected(); n == 0 {
+			return aud.ErrConflict
 		}
 
 		if tx.Dialect().Name() == dialect.PG {
@@ -83,6 +88,7 @@ func (s *Store) GetProject(ctx context.Context, id aud.ID) (aud.Project, error) 
 
 func (s *Store) ListProjects(
 	ctx context.Context,
+	filter aud.ProjectFilter,
 	limit int32,
 	cursor aud.ProjectCursor,
 ) ([]aud.Project, error) {
@@ -90,6 +96,10 @@ func (s *Store) ListProjects(
 
 	q := s.db.NewSelect().
 		Model(&models)
+
+	if len(filter.ExternalIDs) > 0 {
+		q.Where("external_id IN (?)", bun.In(filter.ExternalIDs))
+	}
 
 	if cursor.LastID != nil {
 		q.Where("id < ?", cursor.LastID)

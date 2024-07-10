@@ -26,4 +26,5 @@ type Project struct {
 	DisplayName         string
 	UpdateRecordEnabled types.BoolValue
 	DeleteRecordEnabled types.BoolValue
+	ExternalID          string
 }

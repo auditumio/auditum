@@ -52,4 +52,13 @@ message Project {
   // If set, overrides the global setting.
   // Defaults to unset.
   google.protobuf.BoolValue delete_record_enabled = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // External project identifier.
+  // This is an optional field that can be used to store a custom identifier
+  // for the project, e.g. for multi-tenancy purposes.
+  // Defaults to unset.
+  //
+  // REQUIREMENTS.
+  // The value must be 3-64 characters long.
+  optional string external_id = 6 [(google.api.field_behavior) = OPTIONAL];
 }
