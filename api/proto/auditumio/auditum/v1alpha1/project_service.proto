@@ -95,9 +95,13 @@ message GetProjectResponse {
 
 message ListProjectsRequest {
   // Describes a filter to apply to the list of projects.
-  message Filter {}
+  message Filter {
+    // Filter projects by their external identifiers.
+    repeated string external_ids = 1;
+  }
 
   // Filter to apply to the list of projects.
+  // The filter and all its fields are optional.
   Filter filter = 1 [(google.api.field_behavior) = OPTIONAL];
 
   // The maximum number of projects to return. The service may return fewer than

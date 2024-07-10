@@ -46,6 +46,14 @@ paths:
           schema:
             $ref: '#/definitions/google.rpc.Status'
       parameters:
+        - name: filter.external_ids
+          description: Filter projects by their external identifiers.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
         - name: page_size
           description: |-
             The maximum number of projects to return. The service may return fewer than
@@ -480,6 +488,12 @@ definitions:
         description: Found record.
   auditumio.auditum.v1alpha1.ListProjectsRequest.Filter:
     type: object
+    properties:
+      external_ids:
+        type: array
+        items:
+          type: string
+        description: Filter projects by their external identifiers.
     description: Describes a filter to apply to the list of projects.
   auditumio.auditum.v1alpha1.ListProjectsResponse:
     type: object
@@ -679,6 +693,16 @@ definitions:
           Whether to allow deleting records for this project.
           If set, overrides the global setting.
           Defaults to unset.
+      external_id:
+        type: string
+        description: |-
+          External project identifier.
+          This is an optional field that can be used to store a custom identifier
+          for the project, e.g. for multi-tenancy purposes.
+          Defaults to unset.
+
+          REQUIREMENTS.
+          The value must be 3-64 characters long.
     description: Represents a project.
     required:
       - display_name
@@ -712,6 +736,16 @@ definitions:
               Whether to allow deleting records for this project.
               If set, overrides the global setting.
               Defaults to unset.
+          external_id:
+            type: string
+            description: |-
+              External project identifier.
+              This is an optional field that can be used to store a custom identifier
+              for the project, e.g. for multi-tenancy purposes.
+              Defaults to unset.
+
+              REQUIREMENTS.
+              The value must be 3-64 characters long.
         description: Project to update.
         title: Project to update.
       update_mask:

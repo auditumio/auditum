@@ -26,12 +26,13 @@ import (
 type projectModel struct {
 	bun.BaseModel `bun:"table:projects,alias:projects"`
 
-	ID                  aud.ID       `bun:"id,pk"`
-	PartitionNumber     int32        `bun:"partition_number,autoincrement"`
-	CreateTime          time.Time    `bun:"create_time,notnull"`
-	DisplayName         string       `bun:"display_name,notnull,nullzero"`
-	UpdateRecordEnabled sql.NullBool `bun:"update_record_enabled"`
-	DeleteRecordEnabled sql.NullBool `bun:"delete_record_enabled"`
+	ID                  aud.ID         `bun:"id,pk"`
+	PartitionNumber     int32          `bun:"partition_number,autoincrement"`
+	CreateTime          time.Time      `bun:"create_time,notnull"`
+	DisplayName         string         `bun:"display_name,notnull,nullzero"`
+	UpdateRecordEnabled sql.NullBool   `bun:"update_record_enabled"`
+	DeleteRecordEnabled sql.NullBool   `bun:"delete_record_enabled"`
+	ExternalID          sql.NullString `bun:"external_id"`
 }
 
 func normalizeProjectModel(model *projectModel) {
@@ -45,6 +46,7 @@ func toProjectModel(project aud.Project) projectModel {
 		DisplayName:         project.DisplayName,
 		UpdateRecordEnabled: toBoolValueModel(project.UpdateRecordEnabled),
 		DeleteRecordEnabled: toBoolValueModel(project.DeleteRecordEnabled),
+		ExternalID:          toNullString(project.ExternalID),
 	}
 }
 
@@ -57,6 +59,7 @@ func fromProjectModel(model projectModel) aud.Project {
 		DisplayName:         model.DisplayName,
 		UpdateRecordEnabled: fromBoolValueModel(model.UpdateRecordEnabled),
 		DeleteRecordEnabled: fromBoolValueModel(model.DeleteRecordEnabled),
+		ExternalID:          fromNullString(model.ExternalID),
 	}
 }
 

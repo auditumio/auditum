@@ -69,6 +69,9 @@ func (s *ProjectServiceServer) CreateProject(
 	project.CreateTime = s.now().UTC()
 
 	err = s.store.CreateProject(ctx, project)
+	if errors.Is(err, aud.ErrConflict) {
+		return nil, status.Errorf(codes.AlreadyExists, "Project with the same external id already exists.")
+	}
 	if err != nil {
 		s.log.Error("Create project in store", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "")
@@ -110,6 +113,8 @@ func (s *ProjectServiceServer) ListProjects(
 	ctx context.Context,
 	req *auditumv1alpha1.ListProjectsRequest,
 ) (*auditumv1alpha1.ListProjectsResponse, error) {
+	filter := decodeProjectFilter(req.GetFilter())
+
 	const (
 		defaultPageSize = 10
 		maxPageSize     = 100
@@ -130,6 +135,7 @@ func (s *ProjectServiceServer) ListProjects(
 
 	projects, err := s.store.ListProjects(
 		ctx,
+		filter,
 		pageSize,
 		cursor,
 	)

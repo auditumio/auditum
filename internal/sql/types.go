@@ -33,3 +33,17 @@ func fromBoolValueModel(src sql.NullBool) types.BoolValue {
 		Valid: src.Valid,
 	}
 }
+
+func toNullString(src string) sql.NullString {
+	return sql.NullString{
+		String: src,
+		Valid:  src != "",
+	}
+}
+
+func fromNullString(src sql.NullString) string {
+	if !src.Valid {
+		return ""
+	}
+	return src.String
+}

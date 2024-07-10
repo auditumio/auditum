@@ -24,6 +24,10 @@ import (
 type ID uuid.UUID
 
 func (id ID) String() string {
+	if id.IsEmpty() {
+		return ""
+	}
+
 	return uuid.UUID(id).String()
 }
 
@@ -39,7 +43,11 @@ func (id ID) Value() (driver.Value, error) {
 	return uuid.UUID(id).Value()
 }
 
-func (id *ID) Scan(src interface{}) error {
+func (id *ID) Scan(src any) error {
+	if src == nil {
+		return nil
+	}
+
 	return (*uuid.UUID)(id).Scan(src)
 }
 

@@ -65,3 +65,11 @@ func encodeBoolValue(src types.BoolValue) *wrapperspb.BoolValue {
 
 	return wrapperspb.Bool(src.Bool)
 }
+
+func encodeOptionalString(src string) *string {
+	if src == "" {
+		return nil
+	}
+
+	return &src
+}

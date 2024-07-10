@@ -16,6 +16,10 @@ package aud
 
 import "github.com/auditumio/auditum/internal/aud/types"
 
+type ProjectFilter struct {
+	ExternalIDs []string
+}
+
 type ProjectCursor struct {
 	LastID *ID `json:"lid,omitempty"`
 }

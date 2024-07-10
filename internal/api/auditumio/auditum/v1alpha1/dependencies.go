@@ -21,12 +21,14 @@ import (
 )
 
 type Store interface {
+	// May return [aud.ErrConflict].
 	CreateProject(ctx context.Context, project aud.Project) error
 
 	GetProject(ctx context.Context, id aud.ID) (aud.Project, error)
 
 	ListProjects(
 		ctx context.Context,
+		filter aud.ProjectFilter,
 		limit int32,
 		cursor aud.ProjectCursor,
 	) ([]aud.Project, error)

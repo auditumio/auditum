@@ -42,6 +42,29 @@ func TestIntegration_Store_CreateProject(t *testing.T) {
 
 	// Seed
 
+	p1id := aud.MustNewID()
+
+	seededProjectModels := []projectModel{
+		{
+			ID:          p1id,
+			CreateTime:  time.Date(2023, 1, 2, 3, 1, 0, 0, time.UTC),
+			DisplayName: "Project 1",
+			UpdateRecordEnabled: sql.NullBool{
+				Bool:  true,
+				Valid: true,
+			},
+			DeleteRecordEnabled: sql.NullBool{
+				Bool:  false,
+				Valid: false,
+			},
+			ExternalID: sql.NullString{
+				String: "123456",
+				Valid:  true,
+			},
+		},
+	}
+
+	seedProjects(ctx, t, db, seededProjectModels...)
 	setCleanupProjects(t, db)
 
 	// Test
@@ -80,6 +103,67 @@ func TestIntegration_Store_CreateProject(t *testing.T) {
 		got := fromProjectModel(model)
 		want := proj
 		assert.Equal(t, want, got)
+	})
+
+	t.Run("Should create project with external id", func(t *testing.T) {
+		id := aud.MustNewID()
+
+		proj := aud.Project{
+			ID:          id,
+			CreateTime:  time.Date(2023, 1, 1, 2, 3, 4, 0, time.UTC),
+			DisplayName: "My Project",
+			UpdateRecordEnabled: types.BoolValue{
+				Bool:  true,
+				Valid: true,
+			},
+			DeleteRecordEnabled: types.BoolValue{
+				Bool:  false,
+				Valid: false,
+			},
+			ExternalID: "6299d91c04dd5dd5d81c99bb",
+		}
+
+		store := NewStore(db)
+
+		err := store.CreateProject(ctx, proj)
+		assert.NoError(t, err)
+
+		// Check if project was created.
+
+		var model projectModel
+		err = db.NewSelect().
+			Model(&model).
+			Where("id = ?", id).
+			Scan(ctx)
+		assert.NoError(t, err)
+
+		got := fromProjectModel(model)
+		want := proj
+		assert.Equal(t, want, got)
+	})
+
+	t.Run("Should return error when project with external id exists", func(t *testing.T) {
+		id := aud.MustNewID()
+
+		proj := aud.Project{
+			ID:          id,
+			CreateTime:  time.Date(2023, 1, 1, 2, 3, 4, 0, time.UTC),
+			DisplayName: "My Project",
+			UpdateRecordEnabled: types.BoolValue{
+				Bool:  true,
+				Valid: true,
+			},
+			DeleteRecordEnabled: types.BoolValue{
+				Bool:  false,
+				Valid: false,
+			},
+			ExternalID: seededProjectModels[0].ExternalID.String,
+		}
+
+		store := NewStore(db)
+
+		err := store.CreateProject(ctx, proj)
+		assert.ErrorIs(t, err, aud.ErrConflict)
 	})
 }
 
