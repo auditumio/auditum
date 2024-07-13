@@ -29,7 +29,7 @@ func LoggingUnaryServerInterceptor(log *zap.Logger) grpc.UnaryServerInterceptor 
 
 // interceptorLogger adapts zap logger to interceptor logger.
 func interceptorLogger(l *zap.Logger) logging.Logger {
-	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
+	return logging.LoggerFunc(func(_ context.Context, lvl logging.Level, msg string, fields ...any) {
 		f := make([]zap.Field, 0, len(fields)/2)
 
 		for i := 0; i < len(fields); i += 2 {

@@ -1,5 +1,5 @@
 buf 1.28.0
-golangci-lint 1.55.2
-golang 1.21.4
+golangci-lint 1.59.1
+golang 1.22.5
 nodejs 18.16.0
 goreleaser 2.0.1

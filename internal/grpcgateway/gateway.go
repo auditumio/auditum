@@ -135,7 +135,7 @@ func newGatewayMux(log *zap.Logger) *runtime.ServeMux {
 		runtime.WithIncomingHeaderMatcher(incomingHeaderMatcher()),
 		runtime.WithOutgoingHeaderMatcher(outgoingHeaderMatcher(log)),
 		runtime.WithUnescapingMode(runtime.UnescapingModeAllExceptReserved),
-		runtime.WithMetadata(func(ctx context.Context, request *http.Request) metadata.MD {
+		runtime.WithMetadata(func(ctx context.Context, _ *http.Request) metadata.MD {
 			pattern, ok := runtime.HTTPPathPattern(ctx)
 			if ok {
 				return metadata.Pairs("http-path-pattern", pattern)
