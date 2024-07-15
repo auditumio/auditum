@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-07-15
+
+### Added
+
+- New _Project_ field `external_id`. The value can be provided when creating a project.
+    This is an optional field that can be used to store a custom identifier
+    for the project, e.g. for multi-tenancy purposes.
+- New `ListProjects` field `filter.external_ids` allows to filter projects by their
+    `external_id` field value.
+- Tracing: added support for `otlp` exporter, to replace deprecated `jaeger` exporter,
+    which is deprecated and will be removed in the next release.
+
+### Deprecated
+
+- `jaeger` tracing exporter is deprecated, use `otlp` instead. See documentation
+    for details on how to configure the new exporter.
+
 ## [0.2.0] - 2023-08-30
 
 The project is moved to community organization [auditumio](https://github.com/auditumio).
