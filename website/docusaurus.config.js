@@ -202,6 +202,9 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+  plugins: [
+    './plugins/webpackDebugFix.js',
+  ]
 };
 
 module.exports = config;
