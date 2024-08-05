@@ -10,7 +10,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
-	github.com/invopop/validation v0.3.0
+	github.com/invopop/validation v0.8.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/env v0.1.0
@@ -41,7 +41,7 @@ require (
 )
 
 require (
-	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
