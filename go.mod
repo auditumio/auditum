@@ -1,6 +1,7 @@
 module github.com/auditumio/auditum
 
 go 1.22.5
+toolchain go1.23.1
 
 require (
 	github.com/caarlos0/env/v9 v9.0.0
@@ -18,7 +19,7 @@ require (
 	github.com/knadh/koanf/providers/structs v0.1.0
 	github.com/knadh/koanf/v2 v2.1.1
 	github.com/prometheus/client_golang v1.20.4
-	github.com/ryboe/q v1.0.21
+	github.com/ryboe/q v1.0.23
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
 	github.com/uptrace/bun v1.2.1
