@@ -16,7 +16,7 @@ require (
 	github.com/knadh/koanf/providers/env v0.1.0
 	github.com/knadh/koanf/providers/file v1.1.0
 	github.com/knadh/koanf/providers/structs v0.1.0
-	github.com/knadh/koanf/v2 v2.1.1
+	github.com/knadh/koanf/v2 v2.1.2
 	github.com/prometheus/client_golang v1.20.4
 	github.com/ryboe/q v1.0.21
 	github.com/spf13/pflag v1.0.5
@@ -52,7 +52,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-viper/mapstructure/v2 v2.0.0-alpha.1 // indirect
+	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
