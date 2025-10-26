@@ -113,7 +113,7 @@ jobs:
 
       - name: Extract Docker image metadata
         id: docker_meta
-        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
+        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
         with:
           images: |
             ${{ env.IMAGE_NAME_DOCKERHUB_AUDITUMIO }}
